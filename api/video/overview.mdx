@@ -6,7 +6,7 @@ description: "Generate high-quality videos from text prompts using Sora, Veo, Lu
 ## Endpoint
 
 ```http
-POST https://api.samurai-ai.com/v1/videos/generations
+POST https://api.samuraiapi.in/v1/videos/generations
 ```
 
 ## How It Works
@@ -40,7 +40,7 @@ headers = {
 
 # Submit job
 job = requests.post(
-    "https://api.samurai-ai.com/v1/videos/generations",
+    "https://api.samuraiapi.in/v1/videos/generations",
     headers=headers,
     json={
         "model": "sora-turbo",
@@ -53,7 +53,7 @@ job = requests.post(
 # Poll for completion
 while True:
     result = requests.get(
-        f"https://api.samurai-ai.com/v1/videos/generations/{job['id']}",
+        f"https://api.samuraiapi.in/v1/videos/generations/{job['id']}",
         headers=headers
     ).json()
     

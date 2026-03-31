@@ -22,7 +22,7 @@ description: "Convert text to vector representations for semantic search, RAG, c
 
 <RequestExample>
 ```bash cURL - Single text
-curl https://samurai-ai.com/v1/embeddings \
+curl https://www.samuraiapi.in/v1/embeddings \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -32,7 +32,7 @@ curl https://samurai-ai.com/v1/embeddings \
 ```
 
 ```bash cURL - Batch
-curl https://samurai-ai.com/v1/embeddings \
+curl https://www.samuraiapi.in/v1/embeddings \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -51,7 +51,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://samurai-ai.com/v1"
+    base_url="https://www.samuraiapi.in/v1"
 )
 
 def embed(texts):

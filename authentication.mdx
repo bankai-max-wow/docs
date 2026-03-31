@@ -13,7 +13,7 @@ Authorization: Bearer sk-samurai-YOUR_API_KEY
 
 ## Getting Your API Key
 
-1. Log in to your [Dashboard](https://samurai-ai.com/dashboard)
+1. Log in to your [Dashboard](https://www.samuraiapi.in/dashboard)
 2. Navigate to **Settings → API Keys**
 3. Click **+ Create API Key**
 4. Give it a name (e.g., "Production", "Development")
@@ -27,7 +27,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_API_KEY",  # Your Samurai AI key
-    base_url="https://api.samurai-ai.com/v1"
+    base_url="https://api.samuraiapi.in/v1"
 )
 ```
 
@@ -36,12 +36,12 @@ import OpenAI from 'openai';
 
 const client = new OpenAI({
   apiKey: process.env.SAMURAI_API_KEY,  // Use env variable
-  baseURL: 'https://api.samurai-ai.com/v1'
+  baseURL: 'https://api.samuraiapi.in/v1'
 });
 ```
 
 ```bash cURL
-curl https://api.samurai-ai.com/v1/chat/completions \
+curl https://api.samuraiapi.in/v1/chat/completions \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"model": "gpt-4o", "messages": [{"role":"user","content":"Hi"}]}'
@@ -62,7 +62,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key=os.environ.get("SAMURAI_API_KEY"),
-    base_url="https://api.samurai-ai.com/v1"
+    base_url="https://api.samuraiapi.in/v1"
 )
 ```
 

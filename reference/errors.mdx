@@ -23,7 +23,7 @@ All errors return a consistent JSON structure:
 |------|------|-------|-----|
 | `400` | `bad_request` | Malformed JSON, invalid parameters, unsupported param for model | Check request body against the [API reference](/api-reference/introduction) |
 | `401` | `auth_error` | Missing, invalid, or revoked API key | Verify your `Authorization: Bearer sk-samurai-...` header |
-| `402` | `insufficient_credits` | PAYG credit balance is $0.00 | Add credits at [dashboard/billing](https://samurai-ai.com/dashboard/billing) |
+| `402` | `insufficient_credits` | PAYG credit balance is $0.00 | Add credits at [dashboard/billing](https://www.samuraiapi.in/dashboard/billing) |
 | `403` | `permission_denied` | Model requires a higher plan tier | Check [pricing plans](/reference/pricing) and upgrade |
 | `404` | `not_found` | Model ID doesn't exist or is unavailable | Check [models list](/reference/models) for valid IDs |
 | `422` | `validation_error` | Parameter values failed validation (e.g. temperature > 2) | Check parameter ranges in the docs |
@@ -40,7 +40,7 @@ All errors return a consistent JSON structure:
     **Symptoms:** Every request fails immediately with `auth_error`
 
     **Causes & Fixes:**
-    - Key starts with `sk-samurai-` but was revoked → Create a new key in the [dashboard](https://samurai-ai.com/dashboard)
+    - Key starts with `sk-samurai-` but was revoked → Create a new key in the [dashboard](https://www.samuraiapi.in/dashboard)
     - Passing `OPENAI_API_KEY` instead of your Samurai key → Use `SAMURAI_API_KEY`
     - Extra spaces or newlines in the key → Strip whitespace with `.strip()`
     - Header format wrong → Must be `Authorization: Bearer sk-samurai-YOUR_KEY`
@@ -57,7 +57,7 @@ All errors return a consistent JSON structure:
     **Symptoms:** Requests to Pro models (o1, Sora, DALL-E 3 HD) fail with `insufficient_credits`
 
     **Fix:**
-    1. Go to [Dashboard → Billing](https://samurai-ai.com/dashboard/billing)
+    1. Go to [Dashboard → Billing](https://www.samuraiapi.in/dashboard/billing)
     2. Purchase PAYG credits ($5 minimum)
     3. Credits are applied instantly
 
@@ -75,7 +75,7 @@ All errors return a consistent JSON structure:
     | Closed-source (GPT-4o, Claude, Gemini) | Free (limited) |
     | Pro (o1, Sora, DALL-E 3 HD) | Pro + PAYG credits |
 
-    **Fix:** Upgrade at [Dashboard → Billing](https://samurai-ai.com/dashboard/billing)
+    **Fix:** Upgrade at [Dashboard → Billing](https://www.samuraiapi.in/dashboard/billing)
   </Accordion>
 
   <Accordion title="429 — Rate Limit Exceeded">
@@ -118,7 +118,7 @@ from openai import OpenAI, RateLimitError, APIStatusError
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://samurai-ai.com/v1"
+    base_url="https://www.samuraiapi.in/v1"
 )
 
 def chat_with_retry(messages: list, model: str = "gpt-4o", max_retries: int = 5):
@@ -173,7 +173,7 @@ import OpenAI, { APIError, RateLimitError, AuthenticationError } from 'openai';
 
 const client = new OpenAI({
   apiKey: process.env.SAMURAI_API_KEY,
-  baseURL: 'https://samurai-ai.com/v1'
+  baseURL: 'https://www.samuraiapi.in/v1'
 });
 
 try {
@@ -245,7 +245,7 @@ All errors return a consistent JSON structure:
   <Accordion title="402 - Insufficient Credits">
     **Problem:** Your PAYG credit balance is $0.
 
-    **Fix:** Add credits from [Dashboard → Billing](https://samurai-ai.com/dashboard/billing). Pro models require PAYG credits on top of your subscription.
+    **Fix:** Add credits from [Dashboard → Billing](https://www.samuraiapi.in/dashboard/billing). Pro models require PAYG credits on top of your subscription.
   </Accordion>
 
   <Accordion title="429 - Rate Limit Exceeded">

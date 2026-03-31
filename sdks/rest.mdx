@@ -6,7 +6,7 @@ description: "Raw HTTP API reference — use Samurai AI from any language or too
 ## Base URL
 
 ```
-https://api.samurai-ai.com/v1
+https://api.samuraiapi.in/v1
 ```
 
 ## Authentication Header
@@ -19,7 +19,7 @@ Content-Type: application/json
 ## Chat Completions
 
 ```bash
-curl https://api.samurai-ai.com/v1/chat/completions \
+curl https://api.samuraiapi.in/v1/chat/completions \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -35,7 +35,7 @@ curl https://api.samurai-ai.com/v1/chat/completions \
 ## Streaming
 
 ```bash
-curl https://api.samurai-ai.com/v1/chat/completions \
+curl https://api.samuraiapi.in/v1/chat/completions \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   --no-buffer \
@@ -49,14 +49,14 @@ curl https://api.samurai-ai.com/v1/chat/completions \
 ## List Models
 
 ```bash
-curl https://api.samurai-ai.com/v1/models \
+curl https://api.samuraiapi.in/v1/models \
   -H "Authorization: Bearer $SAMURAI_API_KEY"
 ```
 
 ## Image Generation
 
 ```bash
-curl https://api.samurai-ai.com/v1/images/generations \
+curl https://api.samuraiapi.in/v1/images/generations \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -70,7 +70,7 @@ curl https://api.samurai-ai.com/v1/images/generations \
 ## Embeddings
 
 ```bash
-curl https://api.samurai-ai.com/v1/embeddings \
+curl https://api.samuraiapi.in/v1/embeddings \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -82,7 +82,7 @@ curl https://api.samurai-ai.com/v1/embeddings \
 ## Text to Speech
 
 ```bash
-curl https://api.samurai-ai.com/v1/audio/speech \
+curl https://api.samuraiapi.in/v1/audio/speech \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -96,7 +96,7 @@ curl https://api.samurai-ai.com/v1/audio/speech \
 ## Speech to Text
 
 ```bash
-curl https://api.samurai-ai.com/v1/audio/transcriptions \
+curl https://api.samuraiapi.in/v1/audio/transcriptions \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -F model="whisper-1" \
   -F file="@audio.mp3"
@@ -106,7 +106,7 @@ curl https://api.samurai-ai.com/v1/audio/transcriptions \
 
 ```php
 <?php
-$response = file_get_contents('https://api.samurai-ai.com/v1/chat/completions', false,
+$response = file_get_contents('https://api.samuraiapi.in/v1/chat/completions', false,
     stream_context_create([
         'http' => [
             'method' => 'POST',
@@ -141,7 +141,7 @@ import (
 func main() {
     client := openai.NewClient(
         option.WithAPIKey("sk-samurai-YOUR_KEY"),
-        option.WithBaseURL("https://api.samurai-ai.com/v1"),
+        option.WithBaseURL("https://api.samuraiapi.in/v1"),
     )
 
     completion, _ := client.Chat.Completions.New(context.Background(),

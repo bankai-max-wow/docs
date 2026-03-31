@@ -113,12 +113,12 @@
       "anchors": [
         {
           "anchor": "Browse Models",
-          "href": "https://samurai-ai.com/models",
+          "href": "https://www.samuraiapi.in/models",
           "icon": "microchip"
         },
         {
           "anchor": "Dashboard",
-          "href": "https://samurai-ai.com/dashboard",
+          "href": "https://www.samuraiapi.in/dashboard",
           "icon": "gauge"
         },
         {
@@ -137,13 +137,13 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@samurai-ai.com"
+        "href": "mailto:support@samuraiapi.in"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get API Key",
-      "href": "https://samurai-ai.com/dashboard"
+      "href": "https://www.samuraiapi.in/dashboard"
     }
   },
   "contextual": {
@@ -151,7 +151,7 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/samurai_ai",
+      "x": "https://x.com/samuraiapi_in",
       "github": "https://github.com/bankai-max-wow"
     }
   }

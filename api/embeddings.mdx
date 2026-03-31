@@ -6,7 +6,7 @@ description: "Convert text into vector representations for semantic search, RAG,
 ## Endpoint
 
 ```http
-POST https://api.samurai-ai.com/v1/embeddings
+POST https://api.samuraiapi.in/v1/embeddings
 ```
 
 ## Request Body
@@ -26,7 +26,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://api.samurai-ai.com/v1"
+    base_url="https://api.samuraiapi.in/v1"
 )
 
 response = client.embeddings.create(
@@ -47,7 +47,7 @@ const vector = response.data[0].embedding;
 console.log(`Dimensions: ${vector.length}`); // 1536
 ```
 ```bash cURL
-curl https://api.samurai-ai.com/v1/embeddings \
+curl https://api.samuraiapi.in/v1/embeddings \
   -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{

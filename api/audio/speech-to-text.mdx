@@ -6,7 +6,7 @@ description: "Transcribe audio files to text using Whisper and other transcripti
 ## Endpoint
 
 ```http
-POST https://api.samurai-ai.com/v1/audio/transcriptions
+POST https://api.samuraiapi.in/v1/audio/transcriptions
 ```
 
 ## Parameters
@@ -28,7 +28,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://api.samurai-ai.com/v1"
+    base_url="https://api.samuraiapi.in/v1"
 )
 
 with open("audio.mp3", "rb") as audio_file:
@@ -54,7 +54,7 @@ const transcript = await client.audio.transcriptions.create({
 console.log(transcript);
 ```
 ```bash cURL
-curl https://api.samurai-ai.com/v1/audio/transcriptions \
+curl https://api.samuraiapi.in/v1/audio/transcriptions \
   -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
   -F model="whisper-1" \
   -F file="@audio.mp3" \

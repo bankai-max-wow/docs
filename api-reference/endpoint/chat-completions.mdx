@@ -52,7 +52,7 @@ description: "Generate a model response for a conversation. Supports 200+ models
 
 <RequestExample>
 ```bash cURL
-curl https://samurai-ai.com/v1/chat/completions \
+curl https://www.samuraiapi.in/v1/chat/completions \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -71,7 +71,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://samurai-ai.com/v1"
+    base_url="https://www.samuraiapi.in/v1"
 )
 
 response = client.chat.completions.create(
@@ -93,7 +93,7 @@ import OpenAI from 'openai';
 
 const client = new OpenAI({
   apiKey: process.env.SAMURAI_API_KEY,
-  baseURL: 'https://samurai-ai.com/v1'
+  baseURL: 'https://www.samuraiapi.in/v1'
 });
 
 const response = await client.chat.completions.create({

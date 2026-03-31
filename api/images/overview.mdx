@@ -6,7 +6,7 @@ description: "Generate images from text prompts using DALL-E 3, Flux, Stable Dif
 ## Endpoint
 
 ```http
-POST https://api.samurai-ai.com/v1/images/generations
+POST https://api.samuraiapi.in/v1/images/generations
 ```
 
 ## Request Parameters
@@ -29,7 +29,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://api.samurai-ai.com/v1"
+    base_url="https://api.samuraiapi.in/v1"
 )
 
 response = client.images.generate(
@@ -54,7 +54,7 @@ const response = await client.images.generate({
 console.log(response.data[0].url);
 ```
 ```bash cURL
-curl https://api.samurai-ai.com/v1/images/generations \
+curl https://api.samuraiapi.in/v1/images/generations \
   -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{

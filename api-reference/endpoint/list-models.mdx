@@ -6,7 +6,7 @@ description: "Returns a list of all AI models currently available on Samurai AI.
 
 <RequestExample>
 ```bash cURL
-curl https://samurai-ai.com/v1/models \
+curl https://www.samuraiapi.in/v1/models \
   -H "Authorization: Bearer $SAMURAI_API_KEY"
 ```
 
@@ -15,7 +15,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://samurai-ai.com/v1"
+    base_url="https://www.samuraiapi.in/v1"
 )
 
 models = client.models.list()

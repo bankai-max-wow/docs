@@ -6,7 +6,7 @@ description: "Generate text using 200+ language models. Fully OpenAI-compatible 
 ## Endpoint
 
 ```http
-POST https://samurai-ai.com/v1/chat/completions
+POST https://www.samuraiapi.in/v1/chat/completions
 ```
 
 ## Request Parameters
@@ -33,7 +33,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://samurai-ai.com/v1"
+    base_url="https://www.samuraiapi.in/v1"
 )
 
 response = client.chat.completions.create(
@@ -54,7 +54,7 @@ import OpenAI from 'openai';
 
 const client = new OpenAI({
   apiKey: process.env.SAMURAI_API_KEY,
-  baseURL: 'https://samurai-ai.com/v1'
+  baseURL: 'https://www.samuraiapi.in/v1'
 });
 
 const response = await client.chat.completions.create({
@@ -70,7 +70,7 @@ const response = await client.chat.completions.create({
 console.log(response.choices[0].message.content);
 ```
 ```bash cURL
-curl https://samurai-ai.com/v1/chat/completions \
+curl https://www.samuraiapi.in/v1/chat/completions \
   -H "Authorization: Bearer $SAMURAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -153,7 +153,7 @@ print(r.choices[0].message.content)
 ## Endpoint
 
 ```http
-POST https://api.samurai-ai.com/v1/chat/completions
+POST https://api.samuraiapi.in/v1/chat/completions
 ```
 
 ## Request Body
@@ -188,7 +188,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://api.samurai-ai.com/v1"
+    base_url="https://api.samuraiapi.in/v1"
 )
 
 response = client.chat.completions.create(
@@ -208,7 +208,7 @@ import OpenAI from 'openai';
 
 const client = new OpenAI({
   apiKey: 'sk-samurai-YOUR_KEY',
-  baseURL: 'https://api.samurai-ai.com/v1'
+  baseURL: 'https://api.samuraiapi.in/v1'
 });
 
 const response = await client.chat.completions.create({
@@ -224,7 +224,7 @@ const response = await client.chat.completions.create({
 console.log(response.choices[0].message.content);
 ```
 ```bash cURL
-curl https://api.samurai-ai.com/v1/chat/completions \
+curl https://api.samuraiapi.in/v1/chat/completions \
   -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{

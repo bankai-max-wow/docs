@@ -6,7 +6,7 @@ description: "Convert text to lifelike audio using OpenAI TTS and other voice mo
 ## Endpoint
 
 ```http
-POST https://api.samurai-ai.com/v1/audio/speech
+POST https://api.samuraiapi.in/v1/audio/speech
 ```
 
 ## Parameters
@@ -39,7 +39,7 @@ from pathlib import Path
 
 client = OpenAI(
     api_key="sk-samurai-YOUR_KEY",
-    base_url="https://api.samurai-ai.com/v1"
+    base_url="https://api.samuraiapi.in/v1"
 )
 
 response = client.audio.speech.create(
@@ -66,7 +66,7 @@ const buffer = Buffer.from(await response.arrayBuffer());
 fs.writeFileSync('output.mp3', buffer);
 ```
 ```bash cURL
-curl https://api.samurai-ai.com/v1/audio/speech \
+curl https://api.samuraiapi.in/v1/audio/speech \
   -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
