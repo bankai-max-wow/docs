@@ -1,33 +1,80 @@
 ---
-title: 'API Reference'
-description: 'Full reference for the Samurai AI REST API — OpenAI-compatible.'
+title: "API Playground"
+description: "Interactive API reference — test every endpoint directly in the browser with your API key."
 ---
 
 <Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
+  Enter your API key in the **Authentication** field at the top of each endpoint page to send live requests. All calls go to `https://samurai-ai.com/v1`.
 </Note>
 
-## Welcome
+## Base URL
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
-
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+```
+https://samurai-ai.com/v1
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All requests require a `Bearer` token:
+
+```http
+Authorization: Bearer sk-samurai-YOUR_KEY
+```
+
+Get your API key from the [Dashboard](https://samurai-ai.com/dashboard).
+
+## Available Endpoints
+
+<CardGroup cols={2}>
+  <Card title="Chat Completions" icon="message" href="/api-reference/endpoint/chat-completions">
+    `POST /chat/completions` — Generate text with any model
+  </Card>
+  <Card title="List Models" icon="list" href="/api-reference/endpoint/list-models">
+    `GET /models` — See all available models
+  </Card>
+  <Card title="Generate Image" icon="image" href="/api-reference/endpoint/create-image">
+    `POST /images/generations` — DALL-E 3, Flux, and more
+  </Card>
+  <Card title="Text to Speech" icon="volume-high" href="/api-reference/endpoint/create-speech">
+    `POST /audio/speech` — 6 voices, 5 formats
+  </Card>
+  <Card title="Transcribe Audio" icon="microphone" href="/api-reference/endpoint/create-transcription">
+    `POST /audio/transcriptions` — Whisper, 99 languages
+  </Card>
+  <Card title="Create Embedding" icon="vector-square" href="/api-reference/endpoint/create-embedding">
+    `POST /embeddings` — Vector embeddings for RAG & search
+  </Card>
+</CardGroup>
+
+## Response Format
+
+Every response follows the OpenAI format:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "created": 1715000000,
+  "model": "gpt-4o",
+  "choices": [...],
+  "usage": {
+    "prompt_tokens": 28,
+    "completion_tokens": 45,
+    "total_tokens": 73
   }
-]
+}
 ```
+
+## Error Format
+
+```json
+{
+  "error": {
+    "type": "rate_limit_exceeded",
+    "message": "Daily request limit reached. Resets at midnight UTC.",
+    "code": 429
+  }
+}
+```
+
+See [Error Codes](/reference/errors) for the full list.

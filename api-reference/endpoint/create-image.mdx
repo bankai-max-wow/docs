@@ -1,0 +1,82 @@
+---
+title: "Generate Image"
+api: "POST /images/generations"
+description: "Generate images from a text prompt using DALL-E 3, Flux, Stable Diffusion, and more."
+---
+
+<ParamField body="model" type="string" required>
+  Image model ID. Options: `dall-e-3`, `dall-e-2`, `black-forest-labs/flux-1.1-pro`, `black-forest-labs/flux-schnell`, `stability-ai/sdxl`
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+  Text description of the image to generate. Be descriptive — include style, mood, and composition.
+</ParamField>
+
+<ParamField body="n" type="integer" default="1">
+  Number of images to generate. `1`–`10`. DALL-E 3 only supports `n=1`.
+</ParamField>
+
+<ParamField body="size" type="string" default="1024x1024">
+  Image dimensions. DALL-E 3 supports: `1024x1024`, `1792x1024`, `1024x1792`.
+</ParamField>
+
+<ParamField body="quality" type="string" default="standard">
+  **DALL-E 3 only.** `standard` or `hd`. HD has finer details and costs ~2×.
+</ParamField>
+
+<ParamField body="style" type="string" default="vivid">
+  **DALL-E 3 only.** `vivid` (dramatic, hyper-real) or `natural` (more subtle, photorealistic).
+</ParamField>
+
+<ParamField body="response_format" type="string" default="url">
+  `url` returns a temporary URL (valid 1 hour). `b64_json` returns base64-encoded image data.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl https://samurai-ai.com/v1/images/generations \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "dall-e-3",
+    "prompt": "A samurai warrior standing on Mount Fuji at sunrise, oil painting style, dramatic lighting",
+    "size": "1792x1024",
+    "quality": "hd",
+    "style": "vivid"
+  }'
+```
+
+```python Python
+response = client.images.generate(
+    model="dall-e-3",
+    prompt="A samurai warrior standing on Mount Fuji at sunrise, oil painting style",
+    size="1792x1024",
+    quality="hd",
+    style="vivid"
+)
+print(response.data[0].url)
+```
+
+```python Flux (fastest)
+response = client.images.generate(
+    model="black-forest-labs/flux-schnell",
+    prompt="Neon-lit Tokyo street at night, cyberpunk aesthetic, ultra-detailed",
+    size="1024x1024"
+)
+print(response.data[0].url)
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "created": 1715000000,
+  "data": [
+    {
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/...",
+      "revised_prompt": "A dramatic oil painting of a samurai warrior standing on the snow-capped summit of Mount Fuji at sunrise, with golden light illuminating the scene and cherry blossoms in the foreground."
+    }
+  ]
+}
+```
+</ResponseExample>

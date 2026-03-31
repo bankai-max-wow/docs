@@ -3,6 +3,90 @@ title: "Samurai AI"
 description: "Access 400+ AI models through a single OpenAI-compatible API — at 50% off provider prices."
 ---
 
+## What is Samurai AI?
+
+Samurai AI is a unified AI API gateway giving you access to **400+ cutting-edge AI models** through a single **OpenAI-compatible** endpoint — at **50% of the original provider price**.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    First API call in under 5 minutes.
+  </Card>
+  <Card title="Authentication" icon="key" href="/authentication">
+    Get your API key and start building.
+  </Card>
+  <Card title="Browse Models" icon="microchip" href="/reference/models">
+    GPT-4.1, Claude Opus 4, Gemini 2.5 Pro, and 400+ more.
+  </Card>
+  <Card title="API Playground" icon="flask" href="/api-reference/introduction">
+    Test every endpoint live in your browser.
+  </Card>
+</CardGroup>
+
+## Base URL
+
+```
+https://samurai-ai.com/v1
+```
+
+That's the only change you need from OpenAI. Your existing code works as-is.
+
+## Why Samurai AI?
+
+<CardGroup cols={3}>
+  <Card title="50% Cheaper" icon="tag">
+    `gpt-4o` for **$1.25/1M tokens** (vs $2.50 direct). `claude-3-5-sonnet` for **$1.50/1M** (vs $3.00). Every model, every time.
+  </Card>
+  <Card title="OpenAI Compatible" icon="plug">
+    Change `base_url` and your API key. Everything else — SDKs, streaming, function calling, vision — works exactly the same.
+  </Card>
+  <Card title="400+ Models" icon="microchip">
+    Chat, image (DALL-E 3, Flux), video (Sora, Veo 3), audio (Whisper, TTS), embeddings — all in one API.
+  </Card>
+</CardGroup>
+
+## One-Line Migration
+
+<CodeGroup>
+```python Python — Before (OpenAI)
+from openai import OpenAI
+client = OpenAI(api_key="sk-openai-...")
+```
+```python Python — After (Samurai AI)
+from openai import OpenAI
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://samurai-ai.com/v1"   # Only change
+)
+```
+</CodeGroup>
+
+<CodeGroup>
+```javascript Node.js — Before (OpenAI)
+const client = new OpenAI({ apiKey: 'sk-openai-...' });
+```
+```javascript Node.js — After (Samurai AI)
+const client = new OpenAI({
+  apiKey: 'sk-samurai-YOUR_KEY',
+  baseURL: 'https://samurai-ai.com/v1'    // Only change
+});
+```
+</CodeGroup>
+
+## Compatible Libraries
+
+| Library | Language | How to Configure |
+|---------|----------|-----------------|
+| `openai` | Python / Node.js | `base_url` / `baseURL` |
+| `langchain` | Python / JS | `openai_api_base` |
+| `llama_index` | Python | `api_base` |
+| `@ai-sdk/openai` | TypeScript | `baseURL` in `createOpenAI()` |
+| `litellm` | Python | `api_base` param |
+
+<Note>
+  No special SDK needed. Any library that supports a custom `base_url` works instantly.
+</Note>
+---
+
 ## Setting up
 
 Get your documentation site up and running in minutes.

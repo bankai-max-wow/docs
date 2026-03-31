@@ -1,0 +1,92 @@
+---
+title: "Create Embedding"
+api: "POST /embeddings"
+description: "Convert text to vector representations for semantic search, RAG, clustering, and classification."
+---
+
+<ParamField body="model" type="string" required>
+  Embedding model. Options: `text-embedding-3-small` (1536 dims, fast), `text-embedding-3-large` (3072 dims, best accuracy), `text-embedding-ada-002` (legacy).
+</ParamField>
+
+<ParamField body="input" type="string | array" required>
+  Text to embed. Pass a single string or an array of strings for batch embedding.
+</ParamField>
+
+<ParamField body="encoding_format" type="string" default="float">
+  `float` returns an array of numbers. `base64` returns a base64-encoded string (smaller payload).
+</ParamField>
+
+<ParamField body="dimensions" type="integer">
+  Number of output dimensions (model-dependent). Only for `text-embedding-3-*` models.
+</ParamField>
+
+<RequestExample>
+```bash cURL - Single text
+curl https://samurai-ai.com/v1/embeddings \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "text-embedding-3-small",
+    "input": "The way of the samurai"
+  }'
+```
+
+```bash cURL - Batch
+curl https://samurai-ai.com/v1/embeddings \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "text-embedding-3-small",
+    "input": [
+      "The way of the samurai",
+      "Machine learning is transforming the world",
+      "Tokyo is the capital of Japan"
+    ]
+  }'
+```
+
+```python Python - Semantic search
+import numpy as np
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://samurai-ai.com/v1"
+)
+
+def embed(texts):
+    res = client.embeddings.create(model="text-embedding-3-small", input=texts)
+    return [d.embedding for d in res.data]
+
+def cosine_sim(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+docs = ["Tokyo is the capital of Japan", "Paris is the capital of France"]
+doc_vecs = embed(docs)
+
+query_vec = embed(["What is the capital of Japan?"])[0]
+scores = [cosine_sim(query_vec, v) for v in doc_vecs]
+print(docs[np.argmax(scores)])
+# => "Tokyo is the capital of Japan"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "object": "list",
+  "data": [
+    {
+      "index": 0,
+      "object": "embedding",
+      "embedding": [0.0023064255, -0.009327292, 0.015797656, "...1536 total floats..."]
+    }
+  ],
+  "model": "text-embedding-3-small",
+  "usage": {
+    "prompt_tokens": 8,
+    "total_tokens": 8
+  }
+}
+```
+</ResponseExample>

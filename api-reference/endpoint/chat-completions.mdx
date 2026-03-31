@@ -1,0 +1,156 @@
+---
+title: "Create Chat Completion"
+api: "POST /chat/completions"
+description: "Generate a model response for a conversation. Supports 200+ models, streaming, function calling, and vision."
+---
+
+<ParamField body="model" type="string" required>
+  The model ID to use. See the [Models reference](/reference/models) for all available IDs.
+  
+  Popular values: `gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet-20241022`, `gemini-2.0-flash`, `deepseek-chat`
+</ParamField>
+
+<ParamField body="messages" type="array" required>
+  Array of conversation messages. Each message has a `role` (`system`, `user`, `assistant`) and `content`.
+</ParamField>
+
+<ParamField body="temperature" type="number" default="1">
+  Sampling temperature from `0` to `2`. Lower = more deterministic, higher = more creative.
+</ParamField>
+
+<ParamField body="max_tokens" type="integer">
+  Maximum tokens to generate. If omitted, uses the model's default.
+</ParamField>
+
+<ParamField body="stream" type="boolean" default="false">
+  If `true`, streams partial tokens via Server-Sent Events. See [Streaming](/api/streaming).
+</ParamField>
+
+<ParamField body="top_p" type="number" default="1">
+  Nucleus sampling. Only sample from top `p` probability mass. Use `temperature` OR `top_p`, not both.
+</ParamField>
+
+<ParamField body="frequency_penalty" type="number" default="0">
+  Penalizes tokens based on how often they appear in the text so far. Range: `-2.0` to `2.0`.
+</ParamField>
+
+<ParamField body="presence_penalty" type="number" default="0">
+  Penalizes tokens based on whether they have appeared at all so far. Range: `-2.0` to `2.0`.
+</ParamField>
+
+<ParamField body="stop" type="string | array">
+  Up to 4 stop sequences. The API will stop generating further tokens when it encounters any of these.
+</ParamField>
+
+<ParamField body="n" type="integer" default="1">
+  Number of completions to generate. Each counts toward your usage.
+</ParamField>
+
+<ParamField body="user" type="string">
+  A unique identifier for your end-user. Helps with abuse monitoring.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl https://samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "What is the capital of Japan?"}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 150
+  }'
+```
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://samurai-ai.com/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is the capital of Japan?"}
+    ],
+    temperature=0.7,
+    max_tokens=150
+)
+
+print(response.choices[0].message.content)
+# => "Tokyo is the capital of Japan."
+```
+
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://samurai-ai.com/v1'
+});
+
+const response = await client.chat.completions.create({
+  model: 'claude-3-5-sonnet-20241022',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'What is the capital of Japan?' }
+  ],
+  temperature: 0.7
+});
+
+console.log(response.choices[0].message.content);
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "id": "chatcmpl-abc123xyz",
+  "object": "chat.completion",
+  "created": 1715000000,
+  "model": "gpt-4o",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Tokyo is the capital of Japan. It is also the most populous metropolitan area in the world."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 28,
+    "completion_tokens": 22,
+    "total_tokens": 50
+  }
+}
+```
+
+```json 401
+{
+  "error": {
+    "type": "auth_error",
+    "message": "Invalid API key provided.",
+    "code": 401
+  }
+}
+```
+
+```json 429
+{
+  "error": {
+    "type": "rate_limit_exceeded",
+    "message": "Daily request limit reached. Resets at midnight UTC.",
+    "code": 429
+  }
+}
+```
+</ResponseExample>

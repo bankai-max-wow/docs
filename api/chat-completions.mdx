@@ -1,7 +1,154 @@
 ---
 title: "Chat Completions"
-description: "Generate text responses using 200+ language models via the OpenAI-compatible chat API."
+description: "Generate text using 200+ language models. Fully OpenAI-compatible — POST /v1/chat/completions."
 ---
+
+## Endpoint
+
+```http
+POST https://samurai-ai.com/v1/chat/completions
+```
+
+## Request Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `model` | string | ✅ | — | Model ID (e.g. `gpt-4o`, `claude-3-5-sonnet-20241022`) |
+| `messages` | array | ✅ | — | Conversation history with `role` + `content` |
+| `temperature` | number | — | `1` | Creativity: `0` = deterministic, `2` = very creative |
+| `max_tokens` | integer | — | model default | Max tokens to generate |
+| `stream` | boolean | — | `false` | Stream partial tokens via SSE |
+| `top_p` | number | — | `1` | Nucleus sampling threshold |
+| `frequency_penalty` | number | — | `0` | Reduce repetition. Range: `-2.0` to `2.0` |
+| `presence_penalty` | number | — | `0` | Encourage new topics. Range: `-2.0` to `2.0` |
+| `stop` | string/array | — | — | Up to 4 stop sequences |
+| `n` | integer | — | `1` | Number of completions to return |
+| `user` | string | — | — | Your end-user ID for monitoring |
+
+## Code Examples
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://samurai-ai.com/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain quantum entanglement in simple terms."}
+    ],
+    temperature=0.7,
+    max_tokens=300
+)
+
+print(response.choices[0].message.content)
+print(f"Used {response.usage.total_tokens} tokens")
+```
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://samurai-ai.com/v1'
+});
+
+const response = await client.chat.completions.create({
+  model: 'claude-3-5-sonnet-20241022',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'Explain quantum entanglement in simple terms.' }
+  ],
+  temperature: 0.7,
+  max_tokens: 300
+});
+
+console.log(response.choices[0].message.content);
+```
+```bash cURL
+curl https://samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Explain quantum entanglement in simple terms."}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 300
+  }'
+```
+</CodeGroup>
+
+## Response Format
+
+```json
+{
+  "id": "chatcmpl-abc123xyz",
+  "object": "chat.completion",
+  "created": 1715000000,
+  "model": "gpt-4o",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Quantum entanglement is like having two magic coins..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 28,
+    "completion_tokens": 145,
+    "total_tokens": 173
+  }
+}
+```
+
+## Multi-turn Conversations
+
+Maintain context by including the full conversation history:
+
+```python
+messages = [{"role": "system", "content": "You are a helpful assistant."}]
+
+# Turn 1
+messages.append({"role": "user", "content": "What is the capital of Japan?"})
+r = client.chat.completions.create(model="gpt-4o", messages=messages)
+reply = r.choices[0].message.content
+messages.append({"role": "assistant", "content": reply})
+
+# Turn 2 — model remembers the context
+messages.append({"role": "user", "content": "What is its population?"})
+r = client.chat.completions.create(model="gpt-4o", messages=messages)
+print(r.choices[0].message.content)
+# => "Tokyo has a population of approximately 13.9 million in the city proper..."
+```
+
+## Try It Live
+
+<Card title="Interactive Playground" icon="flask" href="/api-reference/endpoint/chat-completions">
+  Test the chat API directly in your browser with your API key.
+</Card>
+
+## Popular Models for Chat
+
+| Model | Best For | Input $/1M | Output $/1M |
+|-------|---------|------------|-------------|
+| `gpt-4o` | General purpose, vision | $1.25 | $5.00 |
+| `gpt-4o-mini` | Fast, cheap, great quality | $0.075 | $0.30 |
+| `gpt-4.1` | Long context (1M tokens) | $1.00 | $4.00 |
+| `claude-3-5-sonnet-20241022` | Coding, reasoning | $1.50 | $7.50 |
+| `claude-3-5-haiku-20241022` | Fast Anthropic model | $0.40 | $2.00 |
+| `gemini-2.5-flash-preview-05-20` | Fastest Google model | $0.075 | $0.30 |
+| `deepseek-chat` | Ultra cheap, smart | $0.007 | $0.014 |
+| `llama-3.3-70b-instruct` | Best open-source | $0.05 | $0.16 |
 
 ## Endpoint
 

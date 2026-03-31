@@ -1,6 +1,199 @@
 ---
 title: "Error Codes"
-description: "Complete reference for all Samurai AI API error codes and how to handle them."
+description: "Every error Samurai AI can return, with causes, fixes, and retry strategies."
+---
+
+## Error Response Format
+
+All errors return a consistent JSON structure:
+
+```json
+{
+  "error": {
+    "type": "rate_limit_exceeded",
+    "message": "Daily request limit reached for closed-source models. Resets at midnight UTC.",
+    "code": 429
+  }
+}
+```
+
+## Complete Error Reference
+
+| HTTP | Type | Cause | Fix |
+|------|------|-------|-----|
+| `400` | `bad_request` | Malformed JSON, invalid parameters, unsupported param for model | Check request body against the [API reference](/api-reference/introduction) |
+| `401` | `auth_error` | Missing, invalid, or revoked API key | Verify your `Authorization: Bearer sk-samurai-...` header |
+| `402` | `insufficient_credits` | PAYG credit balance is $0.00 | Add credits at [dashboard/billing](https://samurai-ai.com/dashboard/billing) |
+| `403` | `permission_denied` | Model requires a higher plan tier | Check [pricing plans](/reference/pricing) and upgrade |
+| `404` | `not_found` | Model ID doesn't exist or is unavailable | Check [models list](/reference/models) for valid IDs |
+| `422` | `validation_error` | Parameter values failed validation (e.g. temperature > 2) | Check parameter ranges in the docs |
+| `429` | `rate_limit_exceeded` | Daily request limit hit for your plan | Wait until midnight UTC or upgrade plan |
+| `500` | `server_error` | Internal server error | Retry with exponential backoff |
+| `503` | `model_unavailable` | Upstream provider (OpenAI, Anthropic, etc.) is down | Try a fallback model or retry |
+
+---
+
+## Common Errors & Solutions
+
+<AccordionGroup>
+  <Accordion title="401 — Invalid API Key">
+    **Symptoms:** Every request fails immediately with `auth_error`
+
+    **Causes & Fixes:**
+    - Key starts with `sk-samurai-` but was revoked → Create a new key in the [dashboard](https://samurai-ai.com/dashboard)
+    - Passing `OPENAI_API_KEY` instead of your Samurai key → Use `SAMURAI_API_KEY`
+    - Extra spaces or newlines in the key → Strip whitespace with `.strip()`
+    - Header format wrong → Must be `Authorization: Bearer sk-samurai-YOUR_KEY`
+
+    ```python
+    import os
+    key = os.environ.get("SAMURAI_API_KEY", "").strip()
+    # Verify it looks right
+    assert key.startswith("sk-samurai-"), f"Bad key format: {key[:20]}..."
+    ```
+  </Accordion>
+
+  <Accordion title="402 — Insufficient Credits">
+    **Symptoms:** Requests to Pro models (o1, Sora, DALL-E 3 HD) fail with `insufficient_credits`
+
+    **Fix:**
+    1. Go to [Dashboard → Billing](https://samurai-ai.com/dashboard/billing)
+    2. Purchase PAYG credits ($5 minimum)
+    3. Credits are applied instantly
+
+    **Note:** Subscription plans (Free/Starter/Pro) give request quotas. PAYG credits are separate and needed for Pro-tier models.
+  </Accordion>
+
+  <Accordion title="403 — Permission Denied">
+    **Symptoms:** Request works for some models but not others
+
+    **Cause:** Your current plan doesn't include that model class.
+
+    | Model Class | Minimum Plan |
+    |-------------|-------------|
+    | Open-source (Llama, Mistral, DeepSeek) | Free |
+    | Closed-source (GPT-4o, Claude, Gemini) | Free (limited) |
+    | Pro (o1, Sora, DALL-E 3 HD) | Pro + PAYG credits |
+
+    **Fix:** Upgrade at [Dashboard → Billing](https://samurai-ai.com/dashboard/billing)
+  </Accordion>
+
+  <Accordion title="429 — Rate Limit Exceeded">
+    **Symptoms:** Requests fail mid-session, especially for high-volume use
+
+    **Plan limits (requests per day):**
+    | Plan | Open-source | Closed-source | Pro |
+    |------|------------|---------------|-----|
+    | Free | 150 | 70 | 0 |
+    | Starter | 2,000 | 1,000 | 0 |
+    | Pro | 4,500 | 2,500 | 650 |
+
+    **Fix:** Implement exponential backoff (see below) or upgrade your plan.
+  </Accordion>
+
+  <Accordion title="503 — Model Unavailable">
+    **Symptoms:** Specific model fails but others work fine
+
+    **Cause:** The upstream provider (OpenAI, Anthropic, Google) is experiencing an outage.
+
+    **Fix:** Use a fallback model:
+    ```python
+    FALLBACKS = {
+        "gpt-4o": "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-20241022": "gemini-2.0-flash",
+        "gemini-2.0-flash": "deepseek-chat",
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Retry with Exponential Backoff
+
+```python
+import time
+import random
+from openai import OpenAI, RateLimitError, APIStatusError
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://samurai-ai.com/v1"
+)
+
+def chat_with_retry(messages: list, model: str = "gpt-4o", max_retries: int = 5):
+    """Chat with automatic retry on rate limits and server errors."""
+    for attempt in range(max_retries):
+        try:
+            return client.chat.completions.create(
+                model=model,
+                messages=messages
+            )
+        except RateLimitError:
+            if attempt == max_retries - 1:
+                raise
+            wait = (2 ** attempt) + random.uniform(0, 1)
+            print(f"Rate limited. Retrying in {wait:.1f}s (attempt {attempt + 1}/{max_retries})")
+            time.sleep(wait)
+        except APIStatusError as e:
+            if e.status_code >= 500 and attempt < max_retries - 1:
+                wait = (2 ** attempt) + random.uniform(0, 1)
+                print(f"Server error {e.status_code}. Retrying in {wait:.1f}s")
+                time.sleep(wait)
+            else:
+                raise
+```
+
+## Model Fallback Pattern
+
+```python
+FALLBACK_CHAIN = [
+    "gpt-4o",
+    "claude-3-5-sonnet-20241022",
+    "gemini-2.0-flash",
+    "deepseek-chat",  # cheapest fallback
+]
+
+def chat_with_fallback(messages: list):
+    for model in FALLBACK_CHAIN:
+        try:
+            return client.chat.completions.create(
+                model=model,
+                messages=messages
+            )
+        except Exception as e:
+            print(f"Model {model} failed: {e}. Trying next...")
+    raise RuntimeError("All models failed")
+```
+
+## Node.js Error Handling
+
+```typescript
+import OpenAI, { APIError, RateLimitError, AuthenticationError } from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://samurai-ai.com/v1'
+});
+
+try {
+  const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [{ role: 'user', content: 'Hello!' }]
+  });
+  console.log(response.choices[0].message.content);
+} catch (error) {
+  if (error instanceof AuthenticationError) {
+    console.error('Invalid API key — check your SAMURAI_API_KEY env var');
+  } else if (error instanceof RateLimitError) {
+    console.error('Rate limited — implement backoff or upgrade plan');
+  } else if (error instanceof APIError) {
+    console.error(`API error ${error.status}: ${error.message}`);
+  } else {
+    throw error;
+  }
+}
+```
 ---
 
 ## Error Response Format

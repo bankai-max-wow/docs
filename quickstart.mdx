@@ -1,6 +1,156 @@
 ---
 title: "Quick Start"
-description: "Make your first Samurai AI API call in under 5 minutes."
+description: "Make your first Samurai AI API call in under 5 minutes. No special SDK needed — use the OpenAI library."
+---
+
+## Step 1: Get your API Key
+
+1. Sign up at [samurai-ai.com](https://samurai-ai.com)
+2. Go to your [Dashboard](https://samurai-ai.com/dashboard)
+3. Click **API Keys → Create New Key**
+4. Copy your key — it starts with `sk-samurai-`
+
+<Warning>
+  Store your API key in an environment variable. Never commit it to version control or expose it in client-side code.
+</Warning>
+
+## Step 2: Install the SDK
+
+Use the official **OpenAI SDK** — no special Samurai package needed:
+
+<CodeGroup>
+```bash pip
+pip install openai
+```
+```bash npm
+npm install openai
+```
+```bash yarn
+yarn add openai
+```
+</CodeGroup>
+
+## Step 3: Set your environment variable
+
+```bash
+export SAMURAI_API_KEY="sk-samurai-YOUR_KEY"
+```
+
+Or create a `.env` file:
+```bash .env
+SAMURAI_API_KEY=sk-samurai-YOUR_KEY
+```
+
+## Step 4: Make your first request
+
+<CodeGroup>
+```python Python
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ.get("SAMURAI_API_KEY"),
+    base_url="https://samurai-ai.com/v1"  # Only change from OpenAI
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is bushido?"}
+    ]
+)
+
+print(response.choices[0].message.content)
+# => "Bushido is the code of ethics followed by Japanese samurai warriors..."
+```
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://samurai-ai.com/v1'   // Only change from OpenAI
+});
+
+const response = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'What is bushido?' }
+  ]
+});
+
+console.log(response.choices[0].message.content);
+```
+```bash cURL
+curl https://samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "What is bushido?"}
+    ]
+  }'
+```
+</CodeGroup>
+
+You'll get a response like:
+
+```json
+{
+  "choices": [{
+    "message": {
+      "role": "assistant",
+      "content": "Bushido is the ethical code of conduct historically observed by the samurai of Japan..."
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": { "prompt_tokens": 24, "completion_tokens": 87, "total_tokens": 111 }
+}
+```
+
+## Try a cheaper model (same quality)
+
+```python
+# DeepSeek V3 — $0.007/1M input tokens (vs $1.25 for GPT-4o)
+response = client.chat.completions.create(
+    model="deepseek-chat",
+    messages=[{"role": "user", "content": "What is bushido?"}]
+)
+print(response.choices[0].message.content)
+```
+
+## Try streaming
+
+```python
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Tell me a haiku about samurai."}],
+    stream=True
+)
+for chunk in stream:
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+```
+
+## What's next?
+
+<CardGroup cols={2}>
+  <Card title="Chat Completions" icon="message" href="/api/chat-completions">
+    Full parameter reference and multi-turn examples.
+  </Card>
+  <Card title="Streaming" icon="wave-square" href="/api/streaming">
+    Real-time streaming with SSE and Vercel AI SDK.
+  </Card>
+  <Card title="All Models" icon="microchip" href="/reference/models">
+    GPT-4.1, Claude Opus 4, Gemini 2.5 Pro, Llama 3.3 and 400+ more.
+  </Card>
+  <Card title="API Playground" icon="flask" href="/api-reference/introduction">
+    Test every endpoint live in your browser.
+  </Card>
+</CardGroup>
 ---
 
 ## Step 1: Get your API Key

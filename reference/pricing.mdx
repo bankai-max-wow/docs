@@ -1,6 +1,130 @@
 ---
 title: "Pricing"
-description: "Samurai AI pricing — 50% off all provider rates with flexible subscription plans."
+description: "Samurai AI charges 50% of provider rates. Real prices from model-metadata — no markup surprises."
+---
+
+<Note>
+  **All prices are 50% of the original provider rate.** Use the same models for half the cost, with no quality difference.
+</Note>
+
+## Subscription Plans
+
+| | Free | Starter | Pro | Enterprise |
+|---|------|---------|-----|------------|
+| **Monthly price** | $0 | $20 | $40 | Custom |
+| **Open-source req/day** | 150 | 2,000 | 4,500 | Unlimited |
+| **Closed-source req/day** | 70 | 1,000 | 2,500 | Unlimited |
+| **Pro models req/day** | 0 | 0 | 650 | Unlimited |
+| **PAYG credits** | ❌ | ✅ | ✅ | ✅ |
+| **Priority support** | ❌ | ❌ | ✅ | ✅ |
+
+### Model Classes
+
+| Class | Examples |
+|-------|---------|
+| **Open-source** | Llama 3.3, Mistral, Mixtral, DeepSeek, Qwen |
+| **Closed-source** | GPT-4o, Claude, Gemini, Grok, GPT-4.1 |
+| **Pro models** | o1, DALL-E 3 HD, Sora, Veo 3, Sora-2 |
+
+---
+
+## Chat / Text Pricing (per 1M tokens)
+
+### OpenAI
+
+| Model | Input | Output | Cache Read |
+|-------|-------|--------|------------|
+| `gpt-4.1` | $1.00 | $4.00 | $0.25 |
+| `gpt-4.1-mini` | $0.20 | $0.80 | $0.05 |
+| `gpt-4.1-nano` | $0.05 | $0.20 | $0.013 |
+| `gpt-4o` | $1.25 | $5.00 | $0.625 |
+| `gpt-4o-mini` | $0.075 | $0.30 | $0.038 |
+| `o1` | $7.50 | $30.00 | $3.75 |
+| `o1-mini` | $1.50 | $6.00 | $0.75 |
+| `o3-mini` | $0.55 | $2.20 | $0.275 |
+| `gpt-4-turbo` | $5.00 | $15.00 | — |
+| `gpt-3.5-turbo` | $0.25 | $0.75 | — |
+
+### Anthropic
+
+| Model | Input | Output | Cache Read |
+|-------|-------|--------|------------|
+| `claude-opus-4-20250514` | $7.50 | $37.50 | $0.75 |
+| `claude-sonnet-4-20250514` | $1.50 | $7.50 | $0.15 |
+| `claude-3-5-sonnet-20241022` | $1.50 | $7.50 | $0.15 |
+| `claude-3-5-haiku-20241022` | $0.40 | $2.00 | $0.04 |
+| `claude-3-opus-20240229` | $7.50 | $37.50 | — |
+| `claude-3-haiku-20240307` | $0.125 | $0.625 | — |
+
+### Google
+
+| Model | Input | Output | Cache Read |
+|-------|-------|--------|------------|
+| `gemini-2.5-pro-preview-05-06` | $1.25 | $5.00 | $0.156 |
+| `gemini-2.5-flash-preview-05-20` | $0.075 | $0.30 | $0.009 |
+| `gemini-2.0-flash` | $0.05 | $0.20 | — |
+| `gemini-1.5-pro` | $0.625 | $2.50 | — |
+| `gemini-1.5-flash` | $0.175 | $0.525 | — |
+
+### Other Providers
+
+| Model | Provider | Input | Output |
+|-------|----------|-------|--------|
+| `deepseek-chat` | DeepSeek | $0.007 | $0.014 |
+| `deepseek-r1` | DeepSeek | $0.275 | $1.10 |
+| `grok-3` | xAI | $1.50 | $7.50 |
+| `grok-3-mini` | xAI | $0.15 | $0.60 |
+| `llama-3.3-70b-instruct` | Meta | $0.05 | $0.16 |
+| `llama-3.1-8b-instruct` | Meta | $0.025 | $0.04 |
+| `mistral-large` | Mistral | $1.00 | $3.00 |
+| `mixtral-8x7b-instruct` | Mistral | $0.07 | $0.21 |
+
+---
+
+## Audio Pricing
+
+| Model | Use Case | Price |
+|-------|----------|-------|
+| `tts-1` | Text to Speech (standard) | $3.75 / 1M characters |
+| `tts-1-hd` | Text to Speech (HD) | $7.50 / 1M characters |
+| `whisper-1` | Speech to Text | $0.003 / minute |
+
+## Embedding Pricing
+
+| Model | Dimensions | Price |
+|-------|-----------|-------|
+| `text-embedding-3-small` | 1536 | $0.01 / 1M tokens |
+| `text-embedding-3-large` | 3072 | $0.065 / 1M tokens |
+| `text-embedding-ada-002` | 1536 | $0.05 / 1M tokens |
+
+---
+
+## PAYG Credits
+
+**Pay-As-You-Go credits** let you exceed plan limits and access Pro models (o1, Sora, DALL-E 3 HD).
+
+- **Minimum purchase:** $5
+- **Credits never expire**
+- Available packages: $5 · $10 · $25 · $50 · $100
+- Required for: Sora, Veo 3, DALL-E 3 HD, o1, o3
+
+---
+
+## Cost Calculator Examples
+
+| Use Case | Model | Volume | Estimated Cost |
+|----------|-------|--------|---------------|
+| Chatbot (avg 500 tokens/msg) | `gpt-4o-mini` | 100K messages | ~$1.88 |
+| Chatbot (avg 500 tokens/msg) | `gpt-4o` | 100K messages | ~$31.25 |
+| Document analysis (2K tokens) | `claude-3-5-sonnet-20241022` | 10K docs | ~$15.00 |
+| Code generation (1K tokens) | `deepseek-chat` | 100K requests | ~$1.05 |
+| HD Images | `dall-e-3` | 1,000 images | ~$20.00 |
+| Subtitles | `whisper-1` | 1,000 min audio | ~$3.00 |
+| Product embeddings | `text-embedding-3-small` | 1M products | ~$10.00 |
+
+<Card title="Upgrade Your Plan" icon="arrow-up-right" href="https://samurai-ai.com/dashboard/billing">
+  View current usage and upgrade instantly from the dashboard.
+</Card>
 ---
 
 ## Pricing Philosophy

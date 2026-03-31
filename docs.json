@@ -8,6 +8,12 @@
     "dark": "#4F46E5"
   },
   "favicon": "/favicon.svg",
+  "api": {
+    "openapi": "api-reference/openapi.json",
+    "playground": {
+      "display": "interactive"
+    }
+  },
   "navigation": {
     "tabs": [
       {
@@ -68,7 +74,7 @@
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "API Playground",
         "groups": [
           {
             "group": "Overview",
@@ -77,26 +83,28 @@
           {
             "group": "Chat",
             "pages": [
-              "api-reference/endpoint/chat",
-              "api-reference/endpoint/completions"
+              "api-reference/endpoint/chat-completions",
+              "api-reference/endpoint/list-models"
             ]
           },
           {
             "group": "Images",
             "pages": [
-              "api-reference/endpoint/images-generate"
+              "api-reference/endpoint/create-image"
             ]
           },
           {
             "group": "Audio",
             "pages": [
-              "api-reference/endpoint/audio-speech",
-              "api-reference/endpoint/audio-transcribe"
+              "api-reference/endpoint/create-speech",
+              "api-reference/endpoint/create-transcription"
             ]
           },
           {
-            "group": "Models",
-            "pages": ["api-reference/endpoint/models-list"]
+            "group": "Embeddings",
+            "pages": [
+              "api-reference/endpoint/create-embedding"
+            ]
           }
         ]
       }

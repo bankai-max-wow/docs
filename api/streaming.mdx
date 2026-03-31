@@ -1,6 +1,161 @@
 ---
 title: "Streaming"
-description: "Receive responses token-by-token in real time using Server-Sent Events."
+description: "Stream responses token-by-token using Server-Sent Events. Add stream: true to any chat request."
+---
+
+## Overview
+
+Add `"stream": true` to any chat completion request to receive tokens as they're generated instead of waiting for the full response. Uses the **Server-Sent Events (SSE)** protocol — the same format as OpenAI.
+
+## Code Examples
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://samurai-ai.com/v1"
+)
+
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain the concept of flow state."}
+    ],
+    stream=True
+)
+
+for chunk in stream:
+    delta = chunk.choices[0].delta
+    if delta.content:
+        print(delta.content, end="", flush=True)
+print()  # final newline
+```
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://samurai-ai.com/v1'
+});
+
+const stream = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'Explain the concept of flow state.' }
+  ],
+  stream: true
+});
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content ?? '';
+  process.stdout.write(content);
+}
+```
+```bash cURL
+curl https://samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  --no-buffer \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "user", "content": "Explain the concept of flow state."}
+    ],
+    "stream": true
+  }'
+```
+</CodeGroup>
+
+## SSE Event Format
+
+Each streamed chunk arrives as a `data:` line:
+
+```
+data: {"id":"chatcmpl-abc","object":"chat.completion.chunk","created":1715000000,"model":"gpt-4o","choices":[{"index":0,"delta":{"content":"Flow"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-abc","object":"chat.completion.chunk","created":1715000000,"model":"gpt-4o","choices":[{"index":0,"delta":{"content":" state"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-abc","object":"chat.completion.chunk","created":1715000000,"model":"gpt-4o","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: [DONE]
+```
+
+The stream ends with `data: [DONE]`.
+
+## Vercel AI SDK
+
+Works perfectly with the Vercel AI SDK for Next.js and React:
+
+```typescript
+// app/api/chat/route.ts
+import { createOpenAI } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+
+const samurai = createOpenAI({
+  apiKey: process.env.SAMURAI_API_KEY!,
+  baseURL: 'https://samurai-ai.com/v1',
+});
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  const result = streamText({
+    model: samurai('gpt-4o'),
+    messages,
+  });
+
+  return result.toDataStreamResponse();
+}
+```
+
+```tsx
+// components/Chat.tsx
+'use client';
+import { useChat } from 'ai/react';
+
+export function Chat() {
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: '/api/chat',
+  });
+
+  return (
+    <div>
+      {messages.map(m => (
+        <div key={m.id}><b>{m.role}:</b> {m.content}</div>
+      ))}
+      <form onSubmit={handleSubmit}>
+        <input value={input} onChange={handleInputChange} placeholder="Say something..." />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
+}
+```
+
+## LangChain Streaming
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
+
+llm = ChatOpenAI(
+    model="gpt-4o",
+    openai_api_key="sk-samurai-YOUR_KEY",
+    openai_api_base="https://samurai-ai.com/v1",
+    streaming=True
+)
+
+for chunk in llm.stream([HumanMessage(content="Tell me a story about a samurai.")]):
+    print(chunk.content, end="", flush=True)
+```
+
+<Tip>
+  All models that support chat completions support streaming. Just set `stream: true`.
+</Tip>
 ---
 
 ## Overview

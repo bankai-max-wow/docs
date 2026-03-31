@@ -1,0 +1,66 @@
+---
+title: "Create Speech"
+api: "POST /audio/speech"
+description: "Convert text to natural-sounding audio. Choose from 6 voices and 5 audio formats."
+---
+
+<ParamField body="model" type="string" required>
+  TTS model. `tts-1` (faster, lower quality) or `tts-1-hd` (slower, higher fidelity).
+</ParamField>
+
+<ParamField body="input" type="string" required>
+  Text to convert to speech. Maximum 4096 characters.
+</ParamField>
+
+<ParamField body="voice" type="string" required>
+  Voice preset. Options: `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`.
+  
+  - `alloy` — neutral, versatile
+  - `echo` — male, authoritative  
+  - `fable` — British accent, storytelling
+  - `onyx` — deep, powerful
+  - `nova` — female, friendly
+  - `shimmer` — female, soft
+</ParamField>
+
+<ParamField body="response_format" type="string" default="mp3">
+  Audio format. Options: `mp3`, `opus`, `aac`, `flac`, `wav`. Use `opus` for lowest latency.
+</ParamField>
+
+<ParamField body="speed" type="number" default="1.0">
+  Playback speed. Range: `0.25` to `4.0`. `1.0` = normal speed.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl https://samurai-ai.com/v1/audio/speech \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "tts-1-hd",
+    "voice": "nova",
+    "input": "The way of the samurai is found in death.",
+    "speed": 0.9
+  }' \
+  --output speech.mp3
+```
+
+```python Python
+from pathlib import Path
+
+response = client.audio.speech.create(
+    model="tts-1-hd",
+    voice="nova",
+    input="The way of the samurai is found in death.",
+    speed=0.9
+)
+response.stream_to_file(Path("speech.mp3"))
+```
+</RequestExample>
+
+<ResponseExample>
+```
+Binary audio file (MP3)
+Content-Type: audio/mpeg
+```
+</ResponseExample>

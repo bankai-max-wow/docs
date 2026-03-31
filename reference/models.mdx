@@ -1,6 +1,150 @@
 ---
 title: "Models"
-description: "Browse all 400+ AI models available through Samurai AI."
+description: "All AI models available on Samurai AI — real IDs, real pricing at 50% off provider rates."
+---
+
+<Note>
+  All prices shown are **Samurai AI prices (50% off provider rates)**. The base URL for all requests is `https://samurai-ai.com/v1`.
+</Note>
+
+## 💬 Chat & Language Models
+
+### OpenAI
+
+| Model ID | Display Name | Context | Max Output | Input $/1M | Output $/1M | Capabilities |
+|----------|-------------|---------|------------|------------|-------------|-------------|
+| `gpt-4.1` | GPT-4.1 | 1M | 32K | $1.00 | $4.00 | text, code, vision, functions |
+| `gpt-4.1-mini` | GPT-4.1 Mini | 1M | 32K | $0.20 | $0.80 | text, code, vision, functions |
+| `gpt-4.1-nano` | GPT-4.1 Nano | 1M | 32K | $0.05 | $0.20 | text, code, functions |
+| `gpt-4o` | GPT-4o | 128K | 16K | $1.25 | $5.00 | text, code, vision, functions |
+| `gpt-4o-mini` | GPT-4o Mini | 128K | 16K | $0.075 | $0.30 | text, code, vision, functions |
+| `o1` | o1 | 200K | 100K | $7.50 | $30.00 | text, code, vision |
+| `o1-mini` | o1 Mini | 128K | 65K | $1.50 | $6.00 | text, code |
+| `o3-mini` | o3 Mini | 200K | 100K | $0.55 | $2.20 | text, code |
+| `gpt-4-turbo` | GPT-4 Turbo | 128K | 4K | $5.00 | $15.00 | text, code, vision, functions |
+| `gpt-3.5-turbo` | GPT-3.5 Turbo | 16K | 4K | $0.25 | $0.75 | text, code, functions |
+
+### Anthropic
+
+| Model ID | Display Name | Context | Max Output | Input $/1M | Output $/1M | Capabilities |
+|----------|-------------|---------|------------|------------|-------------|-------------|
+| `claude-opus-4-20250514` | Claude Opus 4 | 200K | 32K | $7.50 | $37.50 | text, code, vision, functions |
+| `claude-sonnet-4-20250514` | Claude Sonnet 4 | 200K | 64K | $1.50 | $7.50 | text, code, vision, functions |
+| `claude-3-5-sonnet-20241022` | Claude 3.5 Sonnet | 200K | 8K | $1.50 | $7.50 | text, code, vision, functions |
+| `claude-3-5-haiku-20241022` | Claude 3.5 Haiku | 200K | 8K | $0.40 | $2.00 | text, code, vision, functions |
+| `claude-3-opus-20240229` | Claude 3 Opus | 200K | 4K | $7.50 | $37.50 | text, code, vision, functions |
+| `claude-3-haiku-20240307` | Claude 3 Haiku | 200K | 4K | $0.125 | $0.625 | text, code, vision, functions |
+
+### Google
+
+| Model ID | Display Name | Context | Max Output | Input $/1M | Output $/1M | Capabilities |
+|----------|-------------|---------|------------|------------|-------------|-------------|
+| `gemini-2.5-pro-preview-05-06` | Gemini 2.5 Pro | 1M | 65K | $1.25 | $5.00 | text, code, vision, search |
+| `gemini-2.5-flash-preview-05-20` | Gemini 2.5 Flash | 1M | 65K | $0.075 | $0.30 | text, code, vision, search |
+| `gemini-2.0-flash` | Gemini 2.0 Flash | 1M | 8K | $0.05 | $0.20 | text, code, vision, search |
+| `gemini-1.5-pro` | Gemini 1.5 Pro | 1M | 8K | $0.625 | $2.50 | text, code, vision, search |
+| `gemini-1.5-flash` | Gemini 1.5 Flash | 1M | 8K | $0.175 | $0.525 | text, code, vision |
+
+### Meta (Llama)
+
+| Model ID | Display Name | Context | Input $/1M | Output $/1M |
+|----------|-------------|---------|------------|-------------|
+| `llama-3.3-70b-instruct` | Llama 3.3 70B | 131K | $0.05 | $0.16 |
+| `llama-3.1-405b-instruct` | Llama 3.1 405B | 131K | $0.45 | $0.45 |
+| `llama-3.1-70b-instruct` | Llama 3.1 70B | 131K | $0.17 | $0.195 |
+| `llama-3.1-8b-instruct` | Llama 3.1 8B | 131K | $0.025 | $0.04 |
+
+### Mistral
+
+| Model ID | Display Name | Context | Input $/1M | Output $/1M |
+|----------|-------------|---------|------------|-------------|
+| `mistral-large` | Mistral Large | 128K | $1.00 | $3.00 |
+| `mistral-small` | Mistral Small | 32K | $0.05 | $0.15 |
+| `mixtral-8x7b-instruct` | Mixtral 8x7B | 33K | $0.07 | $0.21 |
+| `codestral` | Codestral | 32K | $0.05 | $0.15 |
+
+### DeepSeek
+
+| Model ID | Display Name | Context | Input $/1M | Output $/1M |
+|----------|-------------|---------|------------|-------------|
+| `deepseek-chat` | DeepSeek V3 | 64K | $0.007 | $0.014 |
+| `deepseek-r1` | DeepSeek R1 | 64K | $0.275 | $1.10 |
+
+### xAI
+
+| Model ID | Display Name | Context | Input $/1M | Output $/1M |
+|----------|-------------|---------|------------|-------------|
+| `grok-3` | Grok 3 | 131K | $1.50 | $7.50 |
+| `grok-3-mini` | Grok 3 Mini | 131K | $0.15 | $0.60 |
+| `grok-2` | Grok 2 | 131K | $1.00 | $5.00 |
+
+---
+
+## 🖼️ Image Generation Models
+
+| Model ID | Provider | Notes | Price |
+|----------|----------|-------|-------|
+| `dall-e-3` | OpenAI | Best prompt adherence, `size` + `quality` params | per image |
+| `dall-e-2` | OpenAI | Faster, cheaper | per image |
+| `black-forest-labs/flux-1.1-pro` | Flux | Outstanding quality | per image |
+| `black-forest-labs/flux-schnell` | Flux | Sub-second generation | per image |
+| `black-forest-labs/flux-dev` | Flux | Dev-grade quality | per image |
+| `stability-ai/sdxl` | Stability AI | Supports negative prompts | per image |
+| `ideogram-v2` | Ideogram | Exceptional text in images | per image |
+
+---
+
+## 🎬 Video Generation Models
+
+| Model ID | Provider | Max Duration | Notes |
+|----------|----------|-------------|-------|
+| `sora-2` | OpenAI | 20s | Best coherence, slow gen |
+| `sora-turbo` | OpenAI | 5s | Fast generation |
+| `veo-3` | Google | 10s | Native audio generation |
+| `veo-3.1` | Google | 10s | Improved motion |
+| `luma-dream-machine` | Luma AI | 5s | Image-to-video support |
+| `hailuo-video` | MiniMax | 6s | Cinematic quality |
+| `kling-1.6` | Kuaishou | 10s | High fidelity |
+| `runway-gen3` | Runway | 10s | Cinema-grade |
+
+---
+
+## 🔊 Audio Models
+
+| Model ID | Use Case | Price |
+|----------|----------|-------|
+| `tts-1` | Text to Speech (standard) | $3.75/1M chars |
+| `tts-1-hd` | Text to Speech (HD) | $7.50/1M chars |
+| `whisper-1` | Speech to Text | $0.003/minute |
+
+---
+
+## 🔢 Embedding Models
+
+| Model ID | Dimensions | Context | Price |
+|----------|-----------|---------|-------|
+| `text-embedding-3-small` | 1536 | 8K | $0.01/1M tokens |
+| `text-embedding-3-large` | 3072 | 8K | $0.065/1M tokens |
+| `text-embedding-ada-002` | 1536 | 8K | $0.05/1M tokens |
+
+---
+
+## List Models via API
+
+```bash cURL
+curl https://samurai-ai.com/v1/models \
+  -H "Authorization: Bearer sk-samurai-YOUR_KEY"
+```
+
+```python Python
+models = client.models.list()
+for model in models.data:
+    print(model.id)
+```
+
+<Card title="Browse All Models" icon="microchip" href="https://samurai-ai.com/models">
+  Interactive model browser with real-time pricing and availability.
+</Card>
 ---
 
 ## Top Models by Category
