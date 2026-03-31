@@ -1,0 +1,143 @@
+---
+title: "Node.js SDK"
+description: "Full Node.js and TypeScript integration guide for Samurai AI."
+---
+
+## Installation
+
+```bash npm
+npm install openai
+```
+
+```bash yarn
+yarn add openai
+```
+
+## Basic Setup
+
+```typescript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://api.samurai-ai.com/v1'
+});
+```
+
+## Environment Variables
+
+```bash .env
+SAMURAI_API_KEY=sk-samurai-YOUR_KEY
+```
+
+```typescript
+// Load with dotenv
+import 'dotenv/config';
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://api.samurai-ai.com/v1'
+});
+```
+
+## Chat Completions
+
+```typescript
+const response = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'What is quantum computing?' }
+  ],
+  temperature: 0.7,
+  max_tokens: 500
+});
+
+console.log(response.choices[0].message.content);
+```
+
+## Streaming
+
+```typescript
+const stream = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [{ role: 'user', content: 'Tell me a story.' }],
+  stream: true
+});
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content || '';
+  process.stdout.write(content);
+}
+```
+
+## TypeScript Types
+
+```typescript
+import OpenAI from 'openai';
+import type { ChatCompletionMessageParam } from 'openai/resources';
+
+const messages: ChatCompletionMessageParam[] = [
+  { role: 'user', content: 'Hello!' }
+];
+
+const response = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages
+});
+```
+
+## Vercel AI SDK
+
+```typescript
+import { createOpenAI } from '@ai-sdk/openai';
+import { generateText, streamText } from 'ai';
+
+const samurai = createOpenAI({
+  apiKey: process.env.SAMURAI_API_KEY!,
+  baseURL: 'https://api.samurai-ai.com/v1',
+});
+
+// Generate
+const { text } = await generateText({
+  model: samurai('gpt-4o'),
+  prompt: 'Explain machine learning in one paragraph.'
+});
+
+// Stream
+const { textStream } = streamText({
+  model: samurai('claude-3-5-sonnet-20241022'),
+  prompt: 'Write a short poem.'
+});
+
+for await (const chunk of textStream) {
+  process.stdout.write(chunk);
+}
+```
+
+## Next.js API Route
+
+```typescript
+// app/api/chat/route.ts
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://api.samurai-ai.com/v1'
+});
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages,
+    stream: true
+  });
+
+  return new Response(response.body, {
+    headers: { 'Content-Type': 'text/event-stream' }
+  });
+}
+```

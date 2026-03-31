@@ -1,0 +1,101 @@
+---
+title: "Error Codes"
+description: "Complete reference for all Samurai AI API error codes and how to handle them."
+---
+
+## Error Response Format
+
+All errors return a consistent JSON structure:
+
+```json
+{
+  "error": {
+    "type": "auth_error",
+    "message": "Invalid API key provided.",
+    "code": 401
+  }
+}
+```
+
+## Error Code Reference
+
+| HTTP Status | Type | Cause | Solution |
+|-------------|------|-------|---------|
+| `400` | `bad_request` | Invalid request parameters | Check your request body |
+| `401` | `auth_error` | Missing or invalid API key | Verify your API key |
+| `402` | `insufficient_credits` | PAYG credit balance depleted | Add credits in dashboard |
+| `403` | `permission_denied` | Model requires higher plan | Upgrade your plan |
+| `404` | `not_found` | Model ID doesn't exist | Check `/reference/models` |
+| `422` | `validation_error` | Request failed validation | Check parameter types |
+| `429` | `rate_limit_exceeded` | Daily request limit hit | Wait until midnight UTC |
+| `500` | `server_error` | Internal server error | Retry with backoff |
+| `503` | `model_unavailable` | Upstream provider is down | Try again or use another model |
+
+## Common Errors & Fixes
+
+<AccordionGroup>
+  <Accordion title="401 - Invalid API Key">
+    **Problem:** Your API key is missing, malformed, or revoked.
+
+    **Fix:** Check that:
+    - You're passing `Authorization: Bearer sk-samurai-YOUR_KEY`
+    - The key hasn't been deleted from your dashboard
+    - There are no leading/trailing spaces in your key
+  </Accordion>
+
+  <Accordion title="403 - Permission Denied">
+    **Problem:** The model requires a higher subscription plan.
+
+    **Fix:** Check which plan includes your target model at [/reference/pricing](/reference/pricing). Upgrade from your dashboard.
+  </Accordion>
+
+  <Accordion title="402 - Insufficient Credits">
+    **Problem:** Your PAYG credit balance is $0.
+
+    **Fix:** Add credits from [Dashboard → Billing](https://samurai-ai.com/dashboard/billing). Pro models require PAYG credits on top of your subscription.
+  </Accordion>
+
+  <Accordion title="429 - Rate Limit Exceeded">
+    **Problem:** You've hit your daily request limit.
+
+    **Fix:** Wait until midnight UTC for the limit to reset, implement request queuing, or upgrade your plan.
+  </Accordion>
+
+  <Accordion title="503 - Model Unavailable">
+    **Problem:** The upstream provider (OpenAI, Anthropic, etc.) is experiencing downtime.
+
+    **Fix:** Implement fallback to another model:
+
+    ```python
+    primary_model = "claude-3-5-sonnet-20241022"
+    fallback_model = "gpt-4o"
+
+    try:
+        response = client.chat.completions.create(model=primary_model, messages=messages)
+    except Exception:
+        response = client.chat.completions.create(model=fallback_model, messages=messages)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Python Error Handling
+
+```python
+from openai import (
+    AuthenticationError,
+    RateLimitError,
+    APIStatusError,
+    APIConnectionError
+)
+
+try:
+    response = client.chat.completions.create(model="gpt-4o", messages=messages)
+except AuthenticationError:
+    print("Invalid API key")
+except RateLimitError:
+    print("Rate limit hit — wait and retry")
+except APIStatusError as e:
+    print(f"API error {e.status_code}: {e.message}")
+except APIConnectionError:
+    print("Network error — check your connection")
+```

@@ -1,0 +1,100 @@
+---
+title: "Streaming"
+description: "Receive responses token-by-token in real time using Server-Sent Events."
+---
+
+## Overview
+
+Set `stream: true` to receive tokens as they are generated instead of waiting for the full response. Samurai AI uses the OpenAI-compatible SSE format.
+
+## Code Examples
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Write a haiku about AI."}],
+    stream=True
+)
+
+for chunk in stream:
+    delta = chunk.choices[0].delta
+    if delta.content:
+        print(delta.content, end="", flush=True)
+```
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: 'sk-samurai-YOUR_KEY',
+  baseURL: 'https://api.samurai-ai.com/v1'
+});
+
+const stream = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [{ role: 'user', content: 'Write a haiku about AI.' }],
+  stream: true
+});
+
+for await (const chunk of stream) {
+  const delta = chunk.choices[0]?.delta?.content || '';
+  process.stdout.write(delta);
+}
+```
+```bash cURL
+curl https://api.samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [{"role": "user", "content": "Write a haiku about AI."}],
+    "stream": true
+  }'
+```
+</CodeGroup>
+
+## SSE Format
+
+Each chunk is a `data:` line containing a JSON object:
+
+```
+data: {"id":"chatcmpl-abc","choices":[{"delta":{"content":"Silicon"},"index":0}]}
+
+data: {"id":"chatcmpl-abc","choices":[{"delta":{"content":" dreams"},"index":0}]}
+
+data: [DONE]
+```
+
+The stream ends with `data: [DONE]`.
+
+## Vercel AI SDK
+
+```typescript
+import { createOpenAI } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+
+const samurai = createOpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,
+  baseURL: 'https://api.samurai-ai.com/v1',
+});
+
+const { textStream } = streamText({
+  model: samurai('gpt-4o'),
+  prompt: 'Write a haiku about AI.',
+});
+
+for await (const text of textStream) {
+  process.stdout.write(text);
+}
+```
+
+<Tip>
+  All models that support chat completions also support streaming. Use the same `model` parameter.
+</Tip>

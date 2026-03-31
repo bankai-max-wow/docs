@@ -1,0 +1,143 @@
+---
+title: "Function Calling"
+description: "Give models access to custom tools and functions using structured JSON schemas."
+---
+
+## Overview
+
+Function calling lets you define tools that the model can invoke. When the model decides to call a tool, it returns a structured JSON response that you execute in your application and feed back to the model.
+
+## Basic Example
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+import json
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "Get the current weather for a city",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "description": "The city name, e.g. 'London'"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": ["celsius", "fahrenheit"],
+                        "description": "Temperature unit"
+                    }
+                },
+                "required": ["city"]
+            }
+        }
+    }
+]
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "What's the weather in Tokyo?"}],
+    tools=tools,
+    tool_choice="auto"
+)
+
+message = response.choices[0].message
+
+# Check if the model called a tool
+if message.tool_calls:
+    tool_call = message.tool_calls[0]
+    args = json.loads(tool_call.function.arguments)
+    print(f"Called: {tool_call.function.name}({args})")
+    # => Called: get_weather({'city': 'Tokyo'})
+```
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: 'sk-samurai-YOUR_KEY',
+  baseURL: 'https://api.samurai-ai.com/v1'
+});
+
+const tools = [
+  {
+    type: 'function',
+    function: {
+      name: 'get_weather',
+      description: 'Get the current weather for a city',
+      parameters: {
+        type: 'object',
+        properties: {
+          city: { type: 'string', description: 'City name' },
+          unit: { type: 'string', enum: ['celsius', 'fahrenheit'] }
+        },
+        required: ['city']
+      }
+    }
+  }
+];
+
+const response = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [{ role: 'user', content: "What's the weather in Tokyo?" }],
+  tools,
+  tool_choice: 'auto'
+});
+
+const toolCall = response.choices[0].message.tool_calls?.[0];
+if (toolCall) {
+  const args = JSON.parse(toolCall.function.arguments);
+  console.log(`Called: ${toolCall.function.name}`, args);
+}
+```
+</CodeGroup>
+
+## Multi-Step Tool Use
+
+After receiving a tool call, execute it and send the result back:
+
+```python
+# Step 1: Model requests tool call (see above)
+# Step 2: Execute your function
+def get_weather(city: str, unit: str = "celsius"):
+    return {"city": city, "temperature": 22, "unit": unit, "condition": "Sunny"}
+
+result = get_weather(**args)
+
+# Step 3: Send result back to model
+messages = [
+    {"role": "user", "content": "What's the weather in Tokyo?"},
+    message,  # assistant message with tool_calls
+    {
+        "role": "tool",
+        "tool_call_id": tool_call.id,
+        "content": json.dumps(result)
+    }
+]
+
+final_response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=messages,
+    tools=tools
+)
+print(final_response.choices[0].message.content)
+# => "The weather in Tokyo is currently 22°C and Sunny."
+```
+
+## `tool_choice` Options
+
+| Value | Behavior |
+|-------|----------|
+| `"auto"` | Model decides whether to call a tool |
+| `"none"` | Model never calls tools |
+| `"required"` | Model must call at least one tool |
+| `{"type": "function", "function": {"name": "X"}}` | Force a specific function |

@@ -1,0 +1,122 @@
+---
+title: "Vision"
+description: "Send images to multimodal models for analysis, description, and reasoning."
+---
+
+## Overview
+
+Vision-capable models can analyze images alongside text. Pass image URLs or base64-encoded images in the `content` field of your messages.
+
+## Supported Models
+
+| Model | Provider | Notes |
+|-------|----------|-------|
+| `gpt-4o` | OpenAI | Best overall vision |
+| `gpt-4o-mini` | OpenAI | Fast and affordable |
+| `claude-3-5-sonnet-20241022` | Anthropic | Excellent document understanding |
+| `gemini-2.0-flash` | Google | Fast, 1M context |
+| `gemini-2.5-pro` | Google | Best for complex visual reasoning |
+| `llava-1.6` | Open Source | Open-weight vision model |
+
+## Using Image URLs
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg"}
+                },
+                {
+                    "type": "text",
+                    "text": "What is in this image? Describe it in detail."
+                }
+            ]
+        }
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+```javascript Node.js
+const response = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    {
+      role: 'user',
+      content: [
+        {
+          type: 'image_url',
+          image_url: { url: 'https://example.com/image.jpg' }
+        },
+        {
+          type: 'text',
+          text: 'What is in this image?'
+        }
+      ]
+    }
+  ]
+});
+```
+</CodeGroup>
+
+## Using Base64 Images
+
+```python
+import base64
+
+with open("screenshot.png", "rb") as f:
+    image_data = base64.b64encode(f.read()).decode("utf-8")
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{image_data}"
+                    }
+                },
+                {"type": "text", "text": "Extract all text from this screenshot."}
+            ]
+        }
+    ]
+)
+```
+
+## Multiple Images
+
+```python
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "image_url", "image_url": {"url": "https://example.com/before.jpg"}},
+                {"type": "image_url", "image_url": {"url": "https://example.com/after.jpg"}},
+                {"type": "text", "text": "What changed between these two images?"}
+            ]
+        }
+    ]
+)
+```
+
+## Supported Formats
+
+PNG, JPEG, GIF, WebP — max 20MB per image.

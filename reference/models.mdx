@@ -1,0 +1,78 @@
+---
+title: "Models"
+description: "Browse all 400+ AI models available through Samurai AI."
+---
+
+## Top Models by Category
+
+### 💬 Chat & Reasoning
+
+| Model ID | Provider | Context | Input $/1M | Output $/1M |
+|----------|----------|---------|------------|-------------|
+| `gpt-4o` | OpenAI | 128K | $1.25 | $5.00 |
+| `gpt-4o-mini` | OpenAI | 128K | $0.075 | $0.30 |
+| `gpt-4.1` | OpenAI | 1M | $1.00 | $4.00 |
+| `o3` | OpenAI | 200K | $1.00 | $4.00 |
+| `o4-mini` | OpenAI | 200K | $0.55 | $2.20 |
+| `claude-3-5-sonnet-20241022` | Anthropic | 200K | $1.50 | $7.50 |
+| `claude-3-5-haiku-20241022` | Anthropic | 200K | $0.40 | $2.00 |
+| `claude-3-opus-20240229` | Anthropic | 200K | $7.50 | $37.50 |
+| `gemini-2.5-pro` | Google | 1M | $0.625 | $5.00 |
+| `gemini-2.0-flash` | Google | 1M | $0.05 | $0.20 |
+| `grok-3` | xAI | 131K | $1.50 | $7.50 |
+| `deepseek-chat` | DeepSeek | 64K | $0.007 | $0.014 |
+| `deepseek-r1` | DeepSeek | 64K | $0.275 | $1.00 |
+
+### 🖼️ Image Generation
+
+| Model ID | Provider | Price |
+|----------|----------|-------|
+| `dall-e-3` | OpenAI | $0.02–0.04/img |
+| `black-forest-labs/flux-1.1-pro` | Flux | $0.02/img |
+| `black-forest-labs/flux-schnell` | Flux | $0.003/img |
+| `stability-ai/sdxl` | Stability AI | $0.005/img |
+| `ideogram-v2` | Ideogram | $0.02/img |
+
+### 🎬 Video Generation
+
+| Model ID | Provider | Max Duration |
+|----------|----------|-------------|
+| `sora-2` | OpenAI | 20s |
+| `sora-turbo` | OpenAI | 5s |
+| `veo-3` | Google | 10s |
+| `luma-dream-machine` | Luma AI | 5s |
+| `hailuo-video` | MiniMax | 6s |
+| `kling-1.6` | Kuaishou | 10s |
+| `runway-gen3` | Runway | 10s |
+
+### 🔊 Audio
+
+| Model ID | Use Case | Price |
+|----------|----------|-------|
+| `tts-1` | Text to Speech | $3.75/1M chars |
+| `tts-1-hd` | High-Quality TTS | $7.50/1M chars |
+| `whisper-1` | Speech to Text | $0.003/min |
+
+### 🔢 Embeddings
+
+| Model ID | Dimensions | Price |
+|----------|-----------|-------|
+| `text-embedding-3-small` | 1536 | $0.01/1M tokens |
+| `text-embedding-3-large` | 3072 | $0.065/1M tokens |
+| `text-embedding-ada-002` | 1536 | $0.05/1M tokens |
+
+## Full Model List
+
+Browse and search all 400+ models with real-time availability and pricing:
+
+<Card title="Browse All Models" icon="microchip" href="https://samurai-ai.com/models">
+  See all available models with filters for type, provider, and pricing.
+</Card>
+
+## Listing Models via API
+
+```python
+models = client.models.list()
+for model in models.data:
+    print(model.id)
+```

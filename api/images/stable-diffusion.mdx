@@ -1,0 +1,41 @@
+---
+title: "Stable Diffusion"
+description: "Open-source image generation models from Stability AI."
+---
+
+## Available Models
+
+| Model ID | Description |
+|----------|-------------|
+| `stability-ai/sdxl` | Stable Diffusion XL — high quality, 1024px |
+| `stable-diffusion-xl-base-1.0` | SDXL base model |
+| `stability-ai/stable-diffusion-3` | SD3 — next-gen quality |
+
+## Code Example
+
+```python
+response = client.images.generate(
+    model="stability-ai/sdxl",
+    prompt="Epic fantasy castle on a floating island, dramatic storm clouds, digital art",
+    size="1024x1024",
+    n=1
+)
+
+print(response.data[0].url)
+```
+
+## Negative Prompts
+
+Stable Diffusion supports negative prompts to exclude unwanted elements. Pass them in the prompt separated by `|`:
+
+```python
+response = client.images.generate(
+    model="stability-ai/sdxl",
+    prompt="Portrait of a woman, professional headshot, studio lighting | blurry, low quality, distorted, ugly",
+    size="1024x1024"
+)
+```
+
+<Note>
+  Negative prompt syntax varies by model. The `|` separator works for most Stability AI models.
+</Note>

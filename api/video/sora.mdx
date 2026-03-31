@@ -1,0 +1,37 @@
+---
+title: "Sora"
+description: "OpenAI's Sora — the world's most capable AI video generation model."
+---
+
+## Models
+
+| Model | Duration | Quality | Speed |
+|-------|----------|---------|-------|
+| `sora-2` | Up to 20s | Highest | Slow (3–10 min) |
+| `sora-turbo` | Up to 5s | High | Fast (30–60s) |
+
+## Features
+
+- **Long coherent videos** up to 20 seconds
+- **Multiple resolutions**: 480p, 720p, 1080p
+- **Aspect ratios**: 16:9, 9:16, 1:1
+- Understands physics and real-world dynamics
+
+## Example
+
+```python
+response = client.post("/videos/generations", body={
+    "model": "sora-turbo",
+    "prompt": "Aerial drone view of a Japanese castle surrounded by cherry blossoms, golden hour",
+    "duration": 5,
+    "aspect_ratio": "16:9"
+})
+
+print(response["id"])  # Poll this ID for completion
+```
+
+## Tips
+
+- Sora excels at cinematic descriptions with lighting and camera movement cues
+- Use `sora-turbo` for rapid iteration; `sora-2` for final production
+- Generation takes 3–10 minutes for `sora-2`; 30–90 seconds for `sora-turbo`

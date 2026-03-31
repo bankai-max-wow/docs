@@ -1,0 +1,85 @@
+---
+title: "Image Generation"
+description: "Generate images from text prompts using DALL-E 3, Flux, Stable Diffusion, and more."
+---
+
+## Endpoint
+
+```http
+POST https://api.samurai-ai.com/v1/images/generations
+```
+
+## Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `model` | string | ✅ | Image model ID (see below) |
+| `prompt` | string | ✅ | Text description of the image |
+| `n` | integer | — | Number of images (1–10). Default: `1` |
+| `size` | string | — | Image dimensions (model-dependent) |
+| `quality` | string | — | `"standard"` or `"hd"` (DALL-E 3 only) |
+| `style` | string | — | `"vivid"` or `"natural"` (DALL-E 3 only) |
+| `response_format` | string | — | `"url"` (default) or `"b64_json"` |
+
+## Quick Example
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+response = client.images.generate(
+    model="dall-e-3",
+    prompt="A futuristic samurai warrior in neon-lit Tokyo, cyberpunk style",
+    size="1024x1024",
+    quality="hd",
+    n=1
+)
+
+print(response.data[0].url)
+```
+```javascript Node.js
+const response = await client.images.generate({
+  model: 'dall-e-3',
+  prompt: 'A futuristic samurai warrior in neon-lit Tokyo, cyberpunk style',
+  size: '1024x1024',
+  quality: 'hd',
+  n: 1
+});
+
+console.log(response.data[0].url);
+```
+```bash cURL
+curl https://api.samurai-ai.com/v1/images/generations \
+  -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "dall-e-3",
+    "prompt": "A futuristic samurai warrior in neon-lit Tokyo",
+    "size": "1024x1024",
+    "quality": "hd"
+  }'
+```
+</CodeGroup>
+
+## Available Models
+
+| Model | Provider | Speed | Quality | Price |
+|-------|----------|-------|---------|-------|
+| `dall-e-3` | OpenAI | Medium | Excellent | $0.02/img |
+| `dall-e-2` | OpenAI | Fast | Good | $0.005/img |
+| `black-forest-labs/flux-1.1-pro` | Flux | Medium | Outstanding | $0.02/img |
+| `black-forest-labs/flux-schnell` | Flux | Very Fast | Good | $0.003/img |
+| `stability-ai/sdxl` | Stability | Fast | Good | $0.005/img |
+
+<Card title="DALL-E 3" icon="wand-magic-sparkles" href="/api/images/dalle">
+  Best photorealism and prompt adherence.
+</Card>
+
+<Card title="Flux Models" icon="bolt" href="/api/images/flux">
+  Fastest generation with excellent quality.
+</Card>

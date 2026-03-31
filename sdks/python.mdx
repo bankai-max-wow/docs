@@ -1,0 +1,150 @@
+---
+title: "Python SDK"
+description: "Full Python integration guide for Samurai AI using the OpenAI Python SDK."
+---
+
+## Installation
+
+```bash
+pip install openai
+```
+
+## Basic Setup
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",  # or os.environ.get("SAMURAI_API_KEY")
+    base_url="https://api.samurai-ai.com/v1"
+)
+```
+
+## Environment Variables
+
+```bash
+export SAMURAI_API_KEY=sk-samurai-YOUR_KEY
+```
+
+```python
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ.get("SAMURAI_API_KEY"),
+    base_url="https://api.samurai-ai.com/v1"
+)
+```
+
+## Async Client
+
+```python
+import asyncio
+from openai import AsyncOpenAI
+
+async_client = AsyncOpenAI(
+    api_key=os.environ.get("SAMURAI_API_KEY"),
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+async def main():
+    response = await async_client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": "Hello async world!"}]
+    )
+    print(response.choices[0].message.content)
+
+asyncio.run(main())
+```
+
+## Streaming
+
+```python
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Write a haiku about samurai."}],
+    stream=True
+)
+
+for chunk in stream:
+    content = chunk.choices[0].delta.content or ""
+    print(content, end="", flush=True)
+print()  # Newline at end
+```
+
+## LangChain Integration
+
+```python
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model="gpt-4o",
+    openai_api_key="sk-samurai-YOUR_KEY",
+    openai_api_base="https://api.samurai-ai.com/v1"
+)
+
+response = llm.invoke("What is the meaning of bushido?")
+print(response.content)
+```
+
+## LlamaIndex Integration
+
+```python
+from llama_index.llms.openai import OpenAI as LlamaOpenAI
+from llama_index.core import Settings
+
+Settings.llm = LlamaOpenAI(
+    model="gpt-4o",
+    api_key="sk-samurai-YOUR_KEY",
+    api_base="https://api.samurai-ai.com/v1"
+)
+```
+
+## Image Generation
+
+```python
+from pathlib import Path
+import requests
+
+response = client.images.generate(
+    model="dall-e-3",
+    prompt="A lone samurai in the rain, ink painting style",
+    size="1024x1024",
+    quality="hd"
+)
+
+# Download and save
+image_url = response.data[0].url
+image_data = requests.get(image_url).content
+Path("samurai.png").write_bytes(image_data)
+```
+
+## Embeddings + Semantic Search
+
+```python
+import numpy as np
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+def get_embedding(text: str) -> list[float]:
+    return client.embeddings.create(
+        model="text-embedding-3-small",
+        input=text
+    ).data[0].embedding
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+# Build index
+docs = ["Python is a programming language", "Samurai were warriors", "AI is the future"]
+doc_embeddings = [get_embedding(d) for d in docs]
+
+# Search
+query_embedding = get_embedding("Tell me about coding")
+scores = [cosine_similarity(query_embedding, e) for e in doc_embeddings]
+print(f"Best match: {docs[np.argmax(scores)]}")
+```

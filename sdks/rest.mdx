@@ -1,0 +1,158 @@
+---
+title: "REST API"
+description: "Raw HTTP API reference — use Samurai AI from any language or tool."
+---
+
+## Base URL
+
+```
+https://api.samurai-ai.com/v1
+```
+
+## Authentication Header
+
+```http
+Authorization: Bearer sk-samurai-YOUR_KEY
+Content-Type: application/json
+```
+
+## Chat Completions
+
+```bash
+curl https://api.samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Hello!"}
+    ],
+    "temperature": 0.7
+  }'
+```
+
+## Streaming
+
+```bash
+curl https://api.samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  --no-buffer \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [{"role": "user", "content": "Count to 5."}],
+    "stream": true
+  }'
+```
+
+## List Models
+
+```bash
+curl https://api.samurai-ai.com/v1/models \
+  -H "Authorization: Bearer $SAMURAI_API_KEY"
+```
+
+## Image Generation
+
+```bash
+curl https://api.samurai-ai.com/v1/images/generations \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "dall-e-3",
+    "prompt": "A samurai warrior at sunrise",
+    "size": "1024x1024",
+    "quality": "hd"
+  }'
+```
+
+## Embeddings
+
+```bash
+curl https://api.samurai-ai.com/v1/embeddings \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "text-embedding-3-small",
+    "input": "The quick brown fox"
+  }'
+```
+
+## Text to Speech
+
+```bash
+curl https://api.samurai-ai.com/v1/audio/speech \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "tts-1",
+    "voice": "nova",
+    "input": "Hello from Samurai AI!"
+  }' \
+  --output speech.mp3
+```
+
+## Speech to Text
+
+```bash
+curl https://api.samurai-ai.com/v1/audio/transcriptions \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -F model="whisper-1" \
+  -F file="@audio.mp3"
+```
+
+## PHP Example
+
+```php
+<?php
+$response = file_get_contents('https://api.samurai-ai.com/v1/chat/completions', false,
+    stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' => [
+                'Authorization: Bearer ' . $_ENV['SAMURAI_API_KEY'],
+                'Content-Type: application/json',
+            ],
+            'content' => json_encode([
+                'model' => 'gpt-4o',
+                'messages' => [['role' => 'user', 'content' => 'Hello!']]
+            ])
+        ]
+    ])
+);
+
+$data = json_decode($response, true);
+echo $data['choices'][0]['message']['content'];
+```
+
+## Go Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "github.com/openai/openai-go"
+    "github.com/openai/openai-go/option"
+)
+
+func main() {
+    client := openai.NewClient(
+        option.WithAPIKey("sk-samurai-YOUR_KEY"),
+        option.WithBaseURL("https://api.samurai-ai.com/v1"),
+    )
+
+    completion, _ := client.Chat.Completions.New(context.Background(),
+        openai.ChatCompletionNewParams{
+            Model: openai.F(openai.ChatModelGPT4o),
+            Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
+                openai.UserMessage("Hello!"),
+            }),
+        },
+    )
+
+    fmt.Println(completion.Choices[0].Message.Content)
+}
+```

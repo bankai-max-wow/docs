@@ -1,0 +1,90 @@
+---
+title: "Authentication"
+description: "Authenticate your Samurai AI API requests using API keys."
+---
+
+## API Keys
+
+All requests to the Samurai AI API must include your API key as a **Bearer token** in the `Authorization` header.
+
+```http
+Authorization: Bearer sk-samurai-YOUR_API_KEY
+```
+
+## Getting Your API Key
+
+1. Log in to your [Dashboard](https://samurai-ai.com/dashboard)
+2. Navigate to **Settings → API Keys**
+3. Click **+ Create API Key**
+4. Give it a name (e.g., "Production", "Development")
+5. Copy and store it securely — it won't be shown again
+
+## Using Your API Key
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_API_KEY",  # Your Samurai AI key
+    base_url="https://api.samurai-ai.com/v1"
+)
+```
+
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.SAMURAI_API_KEY,  // Use env variable
+  baseURL: 'https://api.samurai-ai.com/v1'
+});
+```
+
+```bash cURL
+curl https://api.samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer $SAMURAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "gpt-4o", "messages": [{"role":"user","content":"Hi"}]}'
+```
+</CodeGroup>
+
+## Environment Variables
+
+Always store your API key in environment variables, never hardcode it:
+
+```bash .env
+SAMURAI_API_KEY=sk-samurai-xxxxxxxxxxxxxxxxxxxx
+```
+
+```python Python
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ.get("SAMURAI_API_KEY"),
+    base_url="https://api.samurai-ai.com/v1"
+)
+```
+
+<Warning>
+  **Never expose your API key in:**
+  - Client-side JavaScript / browser code
+  - Public GitHub repositories  
+  - Log files or error messages
+  - Mobile app bundles
+</Warning>
+
+## Error Responses
+
+| Status | Error | Meaning |
+|--------|-------|---------|
+| `401` | `auth_error` | Missing or invalid API key |
+| `403` | `permission_denied` | Valid key but insufficient plan for this model |
+| `402` | `insufficient_credits` | Your credit balance is depleted |
+
+## Managing API Keys
+
+- Create **multiple keys** for different environments (dev, staging, prod)
+- **Rotate keys** periodically for security
+- **Delete unused keys** from your dashboard
+- Keys can be revoked instantly if compromised

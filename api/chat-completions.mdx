@@ -1,0 +1,151 @@
+---
+title: "Chat Completions"
+description: "Generate text responses using 200+ language models via the OpenAI-compatible chat API."
+---
+
+## Endpoint
+
+```http
+POST https://api.samurai-ai.com/v1/chat/completions
+```
+
+## Request Body
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `model` | string | ✅ | Model ID (e.g. `gpt-4o`, `claude-3-5-sonnet-20241022`) |
+| `messages` | array | ✅ | Array of message objects with `role` and `content` |
+| `temperature` | number | — | Sampling temperature 0–2. Default: `1` |
+| `max_tokens` | integer | — | Maximum tokens to generate |
+| `stream` | boolean | — | Enable streaming. Default: `false` |
+| `top_p` | number | — | Nucleus sampling. Default: `1` |
+| `frequency_penalty` | number | — | Penalize frequent tokens (-2 to 2) |
+| `presence_penalty` | number | — | Penalize new topics (-2 to 2) |
+| `stop` | string/array | — | Stop sequences |
+| `n` | integer | — | Number of completions to generate |
+| `user` | string | — | Unique user identifier for abuse monitoring |
+
+## Message Roles
+
+| Role | Description |
+|------|-------------|
+| `system` | Sets the assistant's behavior and persona |
+| `user` | Messages from the human user |
+| `assistant` | Previous assistant responses (for multi-turn) |
+
+## Code Examples
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain quantum computing in simple terms."}
+    ],
+    temperature=0.7,
+    max_tokens=500
+)
+
+print(response.choices[0].message.content)
+```
+```javascript Node.js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: 'sk-samurai-YOUR_KEY',
+  baseURL: 'https://api.samurai-ai.com/v1'
+});
+
+const response = await client.chat.completions.create({
+  model: 'claude-3-5-sonnet-20241022',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'Explain quantum computing in simple terms.' }
+  ],
+  temperature: 0.7,
+  max_tokens: 500
+});
+
+console.log(response.choices[0].message.content);
+```
+```bash cURL
+curl https://api.samurai-ai.com/v1/chat/completions \
+  -H "Authorization: Bearer sk-samurai-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Explain quantum computing in simple terms."}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 500
+  }'
+```
+</CodeGroup>
+
+## Example Response
+
+```json
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "created": 1710000000,
+  "model": "gpt-4o",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Quantum computing uses quantum bits (qubits)..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 32,
+    "completion_tokens": 150,
+    "total_tokens": 182
+  }
+}
+```
+
+## Multi-turn Conversations
+
+Pass previous messages to maintain context:
+
+```python
+messages = [
+    {"role": "system", "content": "You are a helpful assistant."}
+]
+
+# First turn
+messages.append({"role": "user", "content": "What is the capital of France?"})
+response = client.chat.completions.create(model="gpt-4o", messages=messages)
+assistant_reply = response.choices[0].message.content
+messages.append({"role": "assistant", "content": assistant_reply})
+
+# Second turn
+messages.append({"role": "user", "content": "What is its population?"})
+response = client.chat.completions.create(model="gpt-4o", messages=messages)
+print(response.choices[0].message.content)
+```
+
+## Popular Models
+
+| Model | Provider | Context | Input $/1M | Output $/1M |
+|-------|----------|---------|------------|-------------|
+| `gpt-4o` | OpenAI | 128K | $1.25 | $5.00 |
+| `gpt-4o-mini` | OpenAI | 128K | $0.075 | $0.30 |
+| `claude-3-5-sonnet-20241022` | Anthropic | 200K | $1.50 | $7.50 |
+| `gemini-2.0-flash` | Google | 1M | $0.05 | $0.20 |
+| `deepseek-chat` | DeepSeek | 64K | $0.007 | $0.014 |
+| `llama-3.3-70b-instruct` | Meta | 131K | $0.05 | $0.16 |

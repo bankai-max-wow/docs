@@ -1,69 +1,102 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Samurai AI",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4F46E5"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
+            "pages": ["index", "quickstart", "authentication"]
+          },
+          {
+            "group": "Chat & Text",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "api/chat-completions",
+              "api/streaming",
+              "api/function-calling",
+              "api/vision",
+              "api/embeddings"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Image Generation",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "api/images/overview",
+              "api/images/dalle",
+              "api/images/stable-diffusion",
+              "api/images/flux"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Video Generation",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "api/video/overview",
+              "api/video/sora",
+              "api/video/veo",
+              "api/video/luma"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Audio",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "api/audio/text-to-speech",
+              "api/audio/speech-to-text"
+            ]
+          },
+          {
+            "group": "SDKs & Libraries",
+            "pages": ["sdks/python", "sdks/nodejs", "sdks/rest"]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/models",
+              "reference/pricing",
+              "reference/rate-limits",
+              "reference/errors"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Chat",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/endpoint/chat",
+              "api-reference/endpoint/completions"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Images",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/endpoint/images-generate"
             ]
+          },
+          {
+            "group": "Audio",
+            "pages": [
+              "api-reference/endpoint/audio-speech",
+              "api-reference/endpoint/audio-transcribe"
+            ]
+          },
+          {
+            "group": "Models",
+            "pages": ["api-reference/endpoint/models-list"]
           }
         ]
       }
@@ -71,14 +104,19 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Browse Models",
+          "href": "https://samurai-ai.com/models",
+          "icon": "microchip"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Dashboard",
+          "href": "https://samurai-ai.com/dashboard",
+          "icon": "gauge"
+        },
+        {
+          "anchor": "Discord",
+          "href": "https://discord.gg/samurai-ai",
+          "icon": "discord"
         }
       ]
     }
@@ -91,32 +129,22 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@samurai-ai.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Get API Key",
+      "href": "https://samurai-ai.com/dashboard"
     }
   },
   "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "cursor", "vscode"]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/samurai_ai",
+      "github": "https://github.com/bankai-max-wow"
     }
   }
 }

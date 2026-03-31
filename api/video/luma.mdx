@@ -1,0 +1,39 @@
+---
+title: "Luma Dream Machine"
+description: "Fast, cinematic video generation and image-to-video with Luma AI."
+---
+
+## Models
+
+| Model | Type | Duration |
+|-------|------|----------|
+| `luma-dream-machine` | Text & Image-to-Video | Up to 5s |
+| `luma-photon` | Text-to-Video | Up to 5s |
+
+## Text to Video
+
+```python
+response = client.post("/videos/generations", body={
+    "model": "luma-dream-machine",
+    "prompt": "Waves crashing on a rocky Japanese coastline at sunset, slow motion",
+    "duration": 5,
+    "aspect_ratio": "16:9"
+})
+```
+
+## Image to Video
+
+Animate a still image by providing an `image_url`:
+
+```python
+response = client.post("/videos/generations", body={
+    "model": "luma-dream-machine",
+    "prompt": "The samurai slowly raises his sword, dramatic lighting",
+    "image_url": "https://example.com/samurai.jpg",
+    "duration": 5
+})
+```
+
+<Tip>
+  Luma Dream Machine generates videos in 30–60 seconds, making it one of the fastest options.
+</Tip>

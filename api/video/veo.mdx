@@ -1,0 +1,30 @@
+---
+title: "Veo 3"
+description: "Google DeepMind's Veo — state-of-the-art video generation with audio."
+---
+
+## Models
+
+| Model | Duration | Notes |
+|-------|----------|-------|
+| `veo-3` | Up to 10s | Audio generation included |
+| `veo-3.1` | Up to 10s | Improved motion coherence |
+
+## Unique Feature: Native Audio
+
+Veo 3 generates **synchronized audio** with your video — background sounds, music, and ambient noise.
+
+## Example
+
+```python
+response = client.post("/videos/generations", body={
+    "model": "veo-3",
+    "prompt": "A thunderstorm over Tokyo at night, rain on neon signs, thunder in the distance",
+    "duration": 8,
+    "aspect_ratio": "16:9"
+})
+```
+
+<Note>
+  Veo 3 produces videos with audio by default. The audio is generated to match the visual content.
+</Note>

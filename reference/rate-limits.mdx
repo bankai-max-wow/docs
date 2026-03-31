@@ -1,0 +1,78 @@
+---
+title: "Rate Limits"
+description: "Understand request limits by plan and how to handle rate limit errors."
+---
+
+## Rate Limits by Plan
+
+| Plan | Open-Source RPD | Closed-Source RPD | Pro Models RPD |
+|------|----------------|-------------------|----------------|
+| Free | 150 | 70 | 0 |
+| Starter | 2,000 | 1,000 | 0 |
+| Pro | 4,500 | 2,500 | 650 |
+| Enterprise | Unlimited | Unlimited | Unlimited |
+
+RPD = Requests Per Day
+
+## Model Classes
+
+| Class | Examples |
+|-------|---------|
+| **Open-Source** | Llama, Mistral, Mixtral, DeepSeek, Qwen |
+| **Closed-Source** | GPT-4o, Claude, Gemini, Grok |
+| **Pro** | Sora, Veo, DALL-E 3 HD, gpt-4.5 |
+
+## Rate Limit Headers
+
+Every API response includes headers showing your current usage:
+
+```http
+X-RateLimit-Limit-Requests: 2000
+X-RateLimit-Remaining-Requests: 1847
+X-RateLimit-Reset-Requests: 2024-01-01T00:00:00Z
+```
+
+## Handling Rate Limit Errors
+
+When you hit a rate limit, the API returns HTTP `429`:
+
+```json
+{
+  "error": {
+    "type": "rate_limit_exceeded",
+    "message": "Rate limit exceeded. You have used 2000/2000 requests today.",
+    "code": 429
+  }
+}
+```
+
+## Retry with Exponential Backoff
+
+```python
+import time
+import random
+from openai import OpenAI, RateLimitError
+
+client = OpenAI(
+    api_key="sk-samurai-YOUR_KEY",
+    base_url="https://api.samurai-ai.com/v1"
+)
+
+def chat_with_retry(messages, max_retries=5):
+    for attempt in range(max_retries):
+        try:
+            return client.chat.completions.create(
+                model="gpt-4o",
+                messages=messages
+            )
+        except RateLimitError as e:
+            if attempt == max_retries - 1:
+                raise
+            wait = (2 ** attempt) + random.random()  # Exponential backoff
+            print(f"Rate limited. Retrying in {wait:.1f}s...")
+            time.sleep(wait)
+```
+
+<Note>
+  Rate limits reset at midnight UTC. Contact support for enterprise rate limit increases.
+</Note>
