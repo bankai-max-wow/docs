@@ -17,3 +17,56 @@ body::-webkit-scrollbar,
   height: 0 !important;
   background: transparent !important;
 }
+
+/* ============================================
+   Prevent ALL horizontal overflow / side-scroll
+   ============================================ */
+
+html,
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+/* Prose tables — no side scroll, wrap content */
+.prose table,
+table {
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+  table-layout: auto !important;
+  word-break: break-word !important;
+}
+
+.prose td,
+.prose th,
+td,
+th {
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  min-width: 0 !important;
+  white-space: normal !important;
+}
+
+/* Code blocks — no horizontal overflow */
+pre,
+code {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+/* Any block-level element */
+* {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* But allow images and videos to be naturally sized */
+img,
+video,
+svg {
+  max-width: 100% !important;
+  height: auto !important;
+}
