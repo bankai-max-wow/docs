@@ -16,25 +16,6 @@
     }
   },
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Dashboard",
-          "icon": "chart-line",
-          "href": "https://www.samuraiapi.in/dashboard"
-        },
-        {
-          "anchor": "Discord",
-          "icon": "discord",
-          "href": "https://discord.gg/7TsWbcK2j"
-        },
-        {
-          "anchor": "GitHub",
-          "icon": "github",
-          "href": "https://github.com/bankai-max-wow"
-        }
-      ]
-    },
     "tabs": [
       {
         "tab": "Home",
