@@ -1,11 +1,11 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
+  "": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Samurai AI",
   "colors": {
-    "primary": "#6366F1",
-    "light": "#818CF8",
-    "dark": "#4F46E5"
+    "primary": "#3B82F6",
+    "light": "#60A5FA",
+    "dark": "#2563EB"
   },
   "favicon": "/favicon.svg",
   "api": {
@@ -14,14 +14,27 @@
       "display": "interactive"
     }
   },
+  "topAnchor": {
+    "name": "Home",
+    "icon": "house",
+    "href": "https://www.samuraiapi.in"
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
+        "tab": "Home",
+        "url": "https://www.samuraiapi.in"
+      },
+      {
+        "tab": "Dev docs",
         "groups": [
           {
-            "group": "Get Started",
-            "pages": ["index", "quickstart", "authentication"]
+            "group": "Overview",
+            "pages": ["index"]
+          },
+          {
+            "group": "Getting Started",
+            "pages": ["quickstart", "authentication"]
           },
           {
             "group": "Chat & Text",
@@ -34,24 +47,6 @@
             ]
           },
           {
-            "group": "Image Generation",
-            "pages": [
-              "api/images/overview",
-              "api/images/dalle",
-              "api/images/stable-diffusion",
-              "api/images/flux"
-            ]
-          },
-          {
-            "group": "Video Generation",
-            "pages": [
-              "api/video/overview",
-              "api/video/sora",
-              "api/video/veo",
-              "api/video/luma"
-            ]
-          },
-          {
             "group": "Audio",
             "pages": [
               "api/audio/text-to-speech",
@@ -61,20 +56,11 @@
           {
             "group": "SDKs & Libraries",
             "pages": ["sdks/python", "sdks/nodejs", "sdks/rest"]
-          },
-          {
-            "group": "Reference",
-            "pages": [
-              "reference/models",
-              "reference/pricing",
-              "reference/rate-limits",
-              "reference/errors"
-            ]
           }
         ]
       },
       {
-        "tab": "API Playground",
+        "tab": "API reference",
         "groups": [
           {
             "group": "Overview",
@@ -85,12 +71,6 @@
             "pages": [
               "api-reference/endpoint/chat-completions",
               "api-reference/endpoint/list-models"
-            ]
-          },
-          {
-            "group": "Images",
-            "pages": [
-              "api-reference/endpoint/create-image"
             ]
           },
           {
@@ -107,51 +87,57 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Resources",
+        "groups": [
+          {
+            "group": "Resources",
+            "pages": [
+              "reference/models",
+              "reference/pricing",
+              "reference/rate-limits",
+              "reference/errors"
+            ]
+          }
+        ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Browse Models",
-          "href": "https://www.samuraiapi.in/models",
-          "icon": "microchip"
-        },
-        {
-          "anchor": "Dashboard",
-          "href": "https://www.samuraiapi.in/dashboard",
-          "icon": "gauge"
-        },
-        {
-          "anchor": "Discord",
-          "href": "https://discord.gg/samurai-ai",
-          "icon": "discord"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.svg",
+    "href": "https://www.samuraiapi.in"
   },
   "navbar": {
     "links": [
       {
+        "label": "Dashboard",
+        "href": "https://www.samuraiapi.in/dashboard"
+      },
+      {
         "label": "Support",
         "href": "mailto:support@samuraiapi.in"
+      },
+      {
+        "label": "Discord",
+        "href": "https://discord.gg/7TsWbcK2j"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Get API Key",
-      "href": "https://www.samuraiapi.in/dashboard"
+      "label": "Sign Up \u203A",
+      "href": "https://www.samuraiapi.in/register"
     }
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "cursor", "vscode"]
+    "options": ["copy", "view", "chatgpt", "claude", "cursor", "vscode"]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/samuraiapi_in",
+      "x": "https://x.com/SamuraiAI_hq",
+      "discord": "https://discord.gg/7TsWbcK2j",
+      "telegram": "https://t.me/SamuraiApi0g",
       "github": "https://github.com/bankai-max-wow"
     }
   }
