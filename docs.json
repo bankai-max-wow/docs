@@ -1,25 +1,40 @@
 {
-  "": "https://mintlify.com/docs.json",
+  "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Samurai AI",
   "colors": {
-    "primary": "#3B82F6",
-    "light": "#60A5FA",
-    "dark": "#2563EB"
+    "primary": "#4F46E5",
+    "light": "#818CF8",
+    "dark": "#3730A3"
   },
   "favicon": "/favicon.svg",
+  "css": "/custom.css",
   "api": {
     "openapi": "api-reference/openapi.json",
     "playground": {
       "display": "interactive"
     }
   },
-  "topAnchor": {
-    "name": "Home",
-    "icon": "house",
-    "href": "https://www.samuraiapi.in"
-  },
   "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Dashboard",
+          "icon": "chart-line",
+          "url": "https://www.samuraiapi.in/dashboard"
+        },
+        {
+          "anchor": "Discord",
+          "icon": "discord",
+          "url": "https://discord.gg/7TsWbcK2j"
+        },
+        {
+          "anchor": "GitHub",
+          "icon": "github",
+          "url": "https://github.com/bankai-max-wow"
+        }
+      ]
+    },
     "tabs": [
       {
         "tab": "Home",
@@ -97,7 +112,8 @@
               "reference/models",
               "reference/pricing",
               "reference/rate-limits",
-              "reference/errors"
+              "reference/errors",
+              "reference/faq"
             ]
           }
         ]

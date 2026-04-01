@@ -3,22 +3,50 @@ title: "Samurai AI"
 description: "Access 400+ AI models through a single OpenAI-compatible API — at 50% off provider prices."
 ---
 
+<Info>
+  **One API, Unlimited Possibilities**: Access GPT-4.1, Claude Opus 4, Gemini 2.5 Pro, and 400+ models without juggling multiple providers.
+</Info>
+
 ## What is Samurai AI?
 
-Samurai AI is a unified AI API gateway giving you access to **400+ cutting-edge AI models** through a single **OpenAI-compatible** endpoint — at **50% of the original provider price**.
+Samurai AI is your **"super-API"** for AI. Instead of integrating with OpenAI, Anthropic, Google, and other providers separately, you get access to all their models through one unified interface — at **50% of the original provider price**.
+
+### Why Samurai AI?
+
+- **50% Cheaper**: Pay half the provider price on every model, every time
+- **Instant Model Switching**: Change models with one parameter — no code rewrites
+- **OpenAI Compatible**: Drop-in replacement — just change `base_url` and go
+- **400+ Models**: Chat, audio, embeddings — all in one API
+- **Unified Billing**: One invoice for all your AI usage
+
+## Quick Start
 
 <CardGroup cols={2}>
-  <Card title="Quick Start" icon="rocket" href="/quickstart">
-    First API call in under 5 minutes.
+  <Card title="Quick Start" icon="rocket-launch" href="/quickstart">
+    Get your API key and make your first request in minutes.
   </Card>
-  <Card title="Authentication" icon="key" href="/authentication">
+  <Card title="Authentication" icon="shield-halved" href="/authentication">
     Get your API key and start building.
   </Card>
-  <Card title="Browse Models" icon="microchip" href="/reference/models">
+  <Card title="Browse Models" icon="grid-2-plus" href="/reference/models">
     GPT-4.1, Claude Opus 4, Gemini 2.5 Pro, and 400+ more.
   </Card>
   <Card title="API Playground" icon="flask" href="/api-reference/introduction">
     Test every endpoint live in your browser.
+  </Card>
+</CardGroup>
+
+## Core Features
+
+<CardGroup cols={3}>
+  <Card title="50% Cheaper" icon="tag" href="/reference/pricing">
+    `gpt-4o` for **$1.25/1M tokens** vs $2.50 direct. `claude-3-5-sonnet` for **$1.50/1M** vs $3.00. Every model, every time.
+  </Card>
+  <Card title="OpenAI Compatible" icon="plug" href="/api/chat-completions">
+    Change `base_url` and your API key. SDKs, streaming, function calling, vision — all work exactly the same.
+  </Card>
+  <Card title="400+ Models" icon="microchip" href="/reference/models">
+    Chat, audio, embeddings — all in one API. New models added as they launch from providers.
   </Card>
 </CardGroup>
 
@@ -30,152 +58,130 @@ https://www.samuraiapi.in/v1
 
 That's the only change you need from OpenAI. Your existing code works as-is.
 
-## Why Samurai AI?
+## Who Uses Samurai AI?
 
-<CardGroup cols={3}>
-  <Card title="50% Cheaper" icon="tag">
-    `gpt-4o` for **$1.25/1M tokens** (vs $2.50 direct). `claude-3-5-sonnet` for **$1.50/1M** (vs $3.00). Every model, every time.
-  </Card>
-  <Card title="OpenAI Compatible" icon="plug">
-    Change `base_url` and your API key. Everything else — SDKs, streaming, function calling, vision — works exactly the same.
-  </Card>
-  <Card title="400+ Models" icon="microchip">
-    Chat, image (DALL-E 3, Flux), video (Sora, Veo 3), audio (Whisper, TTS), embeddings — all in one API.
-  </Card>
-</CardGroup>
+### Developers
 
-## One-Line Migration
+- Experiment with 400+ models without rewriting code
+- Reduce integration complexity from weeks to minutes
+- Build faster with one API key, one SDK, one invoice
+
+### Businesses
+
+- Cut AI costs by 50% immediately across every model
+- Ensure high availability for customer-facing AI features
+- Future-proof AI investments with provider flexibility
+
+### Researchers
+
+- Access cutting-edge models as they're released
+- Run evaluations across GPT, Claude, Gemini, and more from one endpoint
+- Test model performance across different tasks without managing multiple accounts
+
+## Example: Switching Models
 
 <CodeGroup>
-```python Python — Before (OpenAI)
+```python Python
 from openai import OpenAI
-client = OpenAI(api_key="sk-openai-...")
-```
-```python Python — After (Samurai AI)
-from openai import OpenAI
+
 client = OpenAI(
-    api_key="sk-samurai-YOUR_KEY",
-    base_url="https://www.samuraiapi.in/v1"   # Only change
+    base_url="https://www.samuraiapi.in/v1",
+    api_key="sk-samurai-YOUR_KEY"
+)
+
+# Use GPT-4.1 for complex reasoning
+response = client.chat.completions.create(
+    model="gpt-4.1",
+    messages=[{"role": "user", "content": "Analyze this data..."}]
+)
+
+# Switch to Claude Opus for creative writing
+response = client.chat.completions.create(
+    model="claude-opus-4-5",
+    messages=[{"role": "user", "content": "Write a story about..."}]
+)
+
+# Use Gemini for large context tasks
+response = client.chat.completions.create(
+    model="gemini-2.5-pro",
+    messages=[{"role": "user", "content": "Summarize this document..."}]
 )
 ```
-</CodeGroup>
 
-<CodeGroup>
-```javascript Node.js — Before (OpenAI)
-const client = new OpenAI({ apiKey: 'sk-openai-...' });
-```
-```javascript Node.js — After (Samurai AI)
+```javascript Node.js
+import OpenAI from "openai";
+
 const client = new OpenAI({
-  apiKey: 'sk-samurai-YOUR_KEY',
-  baseURL: 'https://www.samuraiapi.in/v1'    // Only change
+  apiKey: "sk-samurai-YOUR_KEY",
+  baseURL: "https://www.samuraiapi.in/v1",
+});
+
+// GPT-4.1 for reasoning
+const r1 = await client.chat.completions.create({
+  model: "gpt-4.1",
+  messages: [{ role: "user", content: "Analyze this data..." }],
+});
+
+// Claude Opus for creative writing
+const r2 = await client.chat.completions.create({
+  model: "claude-opus-4-5",
+  messages: [{ role: "user", content: "Write a story about..." }],
 });
 ```
 </CodeGroup>
 
-## Compatible Libraries
+## Popular Model Combinations
 
-| Library | Language | How to Configure |
-|---------|----------|-----------------|
-| `openai` | Python / Node.js | `base_url` / `baseURL` |
-| `langchain` | Python / JS | `openai_api_base` |
-| `llama_index` | Python | `api_base` |
-| `@ai-sdk/openai` | TypeScript | `baseURL` in `createOpenAI()` |
-| `litellm` | Python | `api_base` param |
+| Use Case | Primary Model | Why |
+|---|---|---|
+| **Chatbots** | `gpt-4o-mini` | Fast, cost-effective |
+| **Code Generation** | `gpt-4.1` | Best code quality |
+| **Complex Analysis** | `claude-opus-4-5` | Superior reasoning |
+| **Creative Writing** | `claude-opus-4-5` | Creative excellence |
+| **Large Context** | `gemini-2.5-pro` | 1M+ token context |
+| **Embeddings** | `text-embedding-3-small` | Fast, cheap vectors |
 
-<Note>
-  No special SDK needed. Any library that supports a custom `base_url` works instantly.
-</Note>
----
+## Getting Started
 
-## Setting up
+<Tip>
+  **Ready to go?** Make your first API call in under 5 minutes.
+</Tip>
 
-Get your documentation site up and running in minutes.
+<Steps>
+  <Step title="Get API Key">
+    [Sign up](https://www.samuraiapi.in/register) for a Samurai AI account and get your API key from the dashboard.
+  </Step>
+  <Step title="Install SDK">
+    Use the OpenAI SDK you already know — no new packages needed.
+    ```bash
+    pip install openai
+    # or
+    npm install openai
+    ```
+  </Step>
+  <Step title="Make Your First Request">
+    Point to Samurai AI and start using any of 400+ models.
+    ```python
+    from openai import OpenAI
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+    client = OpenAI(
+        api_key="sk-samurai-YOUR_KEY",
+        base_url="https://www.samuraiapi.in/v1"
+    )
 
-## Make it yours
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": "Hello!"}]
+    )
+    print(response.choices[0].message.content)
+    ```
+  </Step>
+</Steps>
 
-Design a docs site that looks great and empowers your users.
+## Need Help?
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+- **Browse our guides**: Comprehensive documentation for every feature
+- **Check the FAQ**: [Common questions and answers](/reference/faq)
+- **Contact support**: [support@samuraiapi.in](mailto:support@samuraiapi.in) for technical assistance
+- **Discord**: [Join our community](https://discord.gg/7TsWbcK2j)
+- **Use search**: Press `Cmd+K` / `Ctrl+K` to search all documentation

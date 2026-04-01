@@ -1,0 +1,203 @@
+---
+title: "FAQ"
+description: "Frequently asked questions about Samurai AI — the unified AI API gateway."
+---
+
+## General
+
+<AccordionGroup>
+  <Accordion title="What is Samurai AI?">
+    Samurai AI is a unified AI API gateway that gives you access to 400+ large language models from OpenAI, Anthropic, Google, Meta, and other providers through a single API. Think of it as your "super-API" for AI — instead of integrating with multiple providers separately, you access all their models through one OpenAI-compatible interface at **50% of the original provider price**.
+  </Accordion>
+
+  <Accordion title="How many models does Samurai AI support?">
+    We currently support **400+ models** including:
+
+    - **OpenAI**: gpt-4.1, gpt-4o, gpt-4o-mini, gpt-3.5-turbo, o1, o3, o4-mini
+    - **Anthropic**: claude-opus-4-5, claude-sonnet-4, claude-3-5-sonnet, claude-3-7-sonnet
+    - **Google**: gemini-2.5-pro, gemini-2.0-flash, gemini-1.5-pro
+    - **Meta**: llama-3.3-70b, llama-3.1-8b, llama-3.2-vision
+    - **And 400+ more models!**
+
+    New models are added as they become available from providers. Check our [Models page](/reference/models) for the full current list.
+  </Accordion>
+
+  <Accordion title="Can I switch between models instantly?">
+    Yes! Switching models is as simple as changing the `model` parameter in your API call. No code changes needed beyond that single parameter.
+
+    ```python
+    # Switch models instantly — only the model ID changes
+    response = client.chat.completions.create(
+        model="gpt-4.1",  # Change this to any supported model ID
+        messages=[{"role": "user", "content": "Hello!"}]
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Do I need separate accounts for each AI provider?">
+    No. You only need one Samurai AI account to access all 400+ models. We handle the complexity of managing multiple provider relationships so you don't have to.
+  </Accordion>
+</AccordionGroup>
+
+## Pricing & Billing
+
+<AccordionGroup>
+  <Accordion title="How does pricing work?">
+    You pay based on actual token usage, just like with individual providers — but at **50% of the original provider price**. For example:
+
+    - `gpt-4o`: **$1.25/1M tokens** (vs $2.50 direct from OpenAI)
+    - `claude-3-5-sonnet`: **$1.50/1M** (vs $3.00 from Anthropic)
+    - `gemini-2.5-pro`: **Half the Google price**
+
+    See our [Pricing page](/reference/pricing) for the full breakdown.
+  </Accordion>
+
+  <Accordion title="Is Samurai AI cheaper than using providers directly?">
+    Always — every model is priced at 50% of what you'd pay the provider directly. On top of that:
+
+    1. **No integration complexity** — one API instead of managing many
+    2. **Unified billing** — one invoice for all your AI usage
+    3. **Saved engineering time** — no managing multiple keys, SDKs, or rate limits
+  </Accordion>
+
+  <Accordion title="Are there plan tiers?">
+    Yes. Models are organized into tiers based on provider pricing:
+
+    - **Free**: Low-cost models (provider output price < $5/1M tokens)
+    - **Starter**: Mid-range models ($5–$20/1M tokens)
+    - **Pro**: Premium models (> $20/1M tokens)
+
+    See our [Pricing page](/reference/pricing) for the full model tier breakdown.
+  </Accordion>
+</AccordionGroup>
+
+## Technical Integration
+
+<AccordionGroup>
+  <Accordion title="Is Samurai AI compatible with existing OpenAI code?">
+    Yes — fully. Samurai AI is 100% OpenAI-compatible. Migration is just two lines:
+
+    ```python
+    # Before (OpenAI)
+    client = OpenAI(api_key="sk-openai-...")
+
+    # After (Samurai AI) — only these two lines change
+    client = OpenAI(
+        base_url="https://www.samuraiapi.in/v1",
+        api_key="sk-samurai-YOUR_KEY"
+    )
+    ```
+
+    All your existing code — SDKs, streaming, function calling, vision — continues to work unchanged.
+  </Accordion>
+
+  <Accordion title="Does streaming work?">
+    Yes, streaming is fully supported and works exactly the same as with OpenAI:
+
+    ```python
+    stream = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": "Tell me a story"}],
+        stream=True
+    )
+    for chunk in stream:
+        print(chunk.choices[0].delta.content or "", end="")
+    ```
+
+    See our [Streaming guide](/api/streaming) for details.
+  </Accordion>
+
+  <Accordion title="Does function calling work?">
+    Yes — function calling is fully supported and works identically to the OpenAI API. See our [Function Calling guide](/api/function-calling) for examples.
+  </Accordion>
+
+  <Accordion title="Does vision (image input) work?">
+    Yes — vision is fully supported for all models that support it (GPT-4o, Claude, Gemini). See our [Vision guide](/api/vision) for details.
+  </Accordion>
+
+  <Accordion title="What about embeddings?">
+    Yes — embeddings are fully supported. Use `text-embedding-3-small`, `text-embedding-3-large`, and other embedding models. See our [Embeddings guide](/api/embeddings).
+  </Accordion>
+
+  <Accordion title="What about rate limits?">
+    Rate limits vary by plan. See our [Rate Limits page](/reference/rate-limits) for current limits per tier.
+  </Accordion>
+
+  <Accordion title="How do I handle errors?">
+    Samurai AI returns standard OpenAI-compatible error responses. See our [Error Reference](/reference/errors) for the full list of error codes and how to handle them.
+  </Accordion>
+</AccordionGroup>
+
+## Compatible Libraries
+
+<AccordionGroup>
+  <Accordion title="Which SDKs and libraries work with Samurai AI?">
+    Any library that supports a custom `base_url` works with Samurai AI:
+
+    | Library | Language | How to Configure |
+    |---------|----------|-----------------|
+    | `openai` | Python / Node.js | `base_url` / `baseURL` |
+    | `langchain` | Python / JS | `openai_api_base` |
+    | `llama_index` | Python | `api_base` |
+    | `@ai-sdk/openai` | TypeScript | `baseURL` in `createOpenAI()` |
+    | `litellm` | Python | `api_base` param |
+
+    No special SDK needed.
+  </Accordion>
+
+  <Accordion title="Does it work with Cursor, Windsurf, or other AI coding tools?">
+    Yes — any tool that lets you configure a custom OpenAI-compatible base URL works with Samurai AI. Set the base URL to `https://www.samuraiapi.in/v1` and your Samurai AI API key.
+  </Accordion>
+</AccordionGroup>
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Who benefits most from Samurai AI?">
+    **Developers**: Experiment with 400+ models without rewriting code. Build faster with one API key and one billing relationship.
+
+    **Businesses**: Cut AI costs by 50% immediately. Ensure high availability for customer-facing AI features.
+
+    **Researchers**: Access every cutting-edge model as it launches. Benchmark across providers from one endpoint without managing multiple accounts.
+  </Accordion>
+
+  <Accordion title="Which model should I use for my use case?">
+    Check our [Models page](/reference/models) for full guidance. General recommendations:
+
+    - **Fast responses**: `gpt-4o-mini`, `gemini-2.0-flash`
+    - **Complex reasoning**: `gpt-4.1`, `claude-opus-4-5`
+    - **Code generation**: `gpt-4.1`, `claude-3-7-sonnet`
+    - **Creative writing**: `claude-opus-4-5`
+    - **Cost-effective**: `gpt-4o-mini`, `gemini-2.0-flash`
+    - **Large context**: `gemini-2.5-pro` (1M+ tokens)
+  </Accordion>
+
+  <Accordion title="Can I use Samurai AI in production?">
+    Yes — Samurai AI is built for production use. We offer high availability, comprehensive logging, and enterprise-grade infrastructure.
+  </Accordion>
+</AccordionGroup>
+
+## Support
+
+<AccordionGroup>
+  <Accordion title="How do I get started?">
+    1. [Sign up](https://www.samuraiapi.in/register) for a Samurai AI account
+    2. Get your API key from the dashboard
+    3. Follow our [Quick Start guide](/quickstart) to make your first request in minutes
+  </Accordion>
+
+  <Accordion title="How do I get support?">
+    - **Documentation**: You're already here — use `Cmd+K` to search
+    - **Discord**: [Join our community](https://discord.gg/7TsWbcK2j)
+    - **Email**: [support@samuraiapi.in](mailto:support@samuraiapi.in)
+    - **X / Twitter**: Follow us [@SamuraiAI_hq](https://x.com/SamuraiAI_hq)
+  </Accordion>
+
+  <Accordion title="Can I migrate from my current provider easily?">
+    Yes — migration typically takes under 5 minutes. Change two lines of code (base URL + API key) and you're done. Everything else — your existing SDK, your code, your prompts — continues to work unchanged.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  **Still have questions?** Reach out at [support@samuraiapi.in](mailto:support@samuraiapi.in) or [join our Discord](https://discord.gg/7TsWbcK2j).
+</Info>
