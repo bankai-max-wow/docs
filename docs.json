@@ -19,19 +19,19 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Dashboard",
+          "name": "Dashboard",
           "icon": "chart-line",
-          "url": "https://www.samuraiapi.in/dashboard"
+          "href": "https://www.samuraiapi.in/dashboard"
         },
         {
-          "anchor": "Discord",
+          "name": "Discord",
           "icon": "discord",
-          "url": "https://discord.gg/7TsWbcK2j"
+          "href": "https://discord.gg/7TsWbcK2j"
         },
         {
-          "anchor": "GitHub",
+          "name": "GitHub",
           "icon": "github",
-          "url": "https://github.com/bankai-max-wow"
+          "href": "https://github.com/bankai-max-wow"
         }
       ]
     },
