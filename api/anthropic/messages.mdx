@@ -1,0 +1,654 @@
+---
+title: "Messages"
+icon: "message"
+description: "Create messages with Claude models using the native Anthropic SDK format. POST /v1/messages."
+---
+
+## Endpoint
+
+```http
+POST https://www.samuraiapi.in/api/v1/messages
+```
+
+<Info>
+  When using the official `anthropic` SDK, set `base_url="https://www.samuraiapi.in/api"` — the SDK appends `/v1/messages` automatically.
+</Info>
+
+---
+
+## Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `model` | string | ✅ | Claude model ID (e.g. `claude-3-5-sonnet-20241022`) |
+| `messages` | array | ✅ | Conversation history — alternating `user` / `assistant` turns |
+| `max_tokens` | integer | ✅ | Maximum tokens to generate. No default — must always be set |
+| `system` | string | — | System prompt. Top-level field, not inside `messages` |
+| `stream` | boolean | — | Stream the response via SSE. Default: `false` |
+| `temperature` | number | — | Creativity: `0` = deterministic, `1` = default |
+| `top_p` | number | — | Nucleus sampling. Default: `1` |
+| `top_k` | integer | — | Sample from top K tokens only |
+| `stop_sequences` | array | — | Strings that stop generation when encountered |
+| `tools` | array | — | Tool definitions the model can invoke |
+| `tool_choice` | object | — | Control when tools are called: `auto`, `any`, `tool`, `none` |
+| `metadata.user_id` | string | — | Your end-user ID for monitoring |
+
+### Message Object
+
+Each entry in `messages` must alternate `user` / `assistant` roles. The first message must be `user`.
+
+```json
+{
+  "role": "user",
+  "content": "Hello!"
+}
+```
+
+Content can be a **string** or an **array of content blocks** (for multimodal input):
+
+```json
+{
+  "role": "user",
+  "content": [
+    { "type": "text", "text": "What is in this image?" },
+    {
+      "type": "image",
+      "source": {
+        "type": "base64",
+        "media_type": "image/jpeg",
+        "data": "/9j/4AAQ..."
+      }
+    }
+  ]
+}
+```
+
+---
+
+## Basic Example
+
+<CodeGroup>
+```python Python
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+
+message = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    system="You are a concise assistant. Keep answers under 3 sentences.",
+    messages=[
+        {"role": "user", "content": "What is the capital of Japan?"}
+    ]
+)
+
+print(message.content[0].text)
+# => "The capital of Japan is Tokyo."
+
+print(f"Tokens: {message.usage.input_tokens} in / {message.usage.output_tokens} out")
+```
+```typescript TypeScript
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  baseURL: "https://www.samuraiapi.in/api",
+  apiKey: process.env.SAMURAI_API_KEY!,
+});
+
+const message = await client.messages.create({
+  model: "claude-3-5-sonnet-20241022",
+  max_tokens: 1024,
+  system: "You are a concise assistant. Keep answers under 3 sentences.",
+  messages: [
+    { role: "user", content: "What is the capital of Japan?" }
+  ],
+});
+
+const text = message.content[0];
+if (text.type === "text") {
+  console.log(text.text);
+}
+console.log(`Tokens: ${message.usage.input_tokens} in / ${message.usage.output_tokens} out`);
+```
+```bash cURL
+curl https://www.samuraiapi.in/api/v1/messages \
+  -H "x-api-key: YOUR_SAMURAI_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{
+    "model": "claude-3-5-sonnet-20241022",
+    "max_tokens": 1024,
+    "system": "You are a concise assistant.",
+    "messages": [
+      {"role": "user", "content": "What is the capital of Japan?"}
+    ]
+  }'
+```
+</CodeGroup>
+
+---
+
+## Response Format
+
+```json
+{
+  "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "The capital of Japan is Tokyo."
+    }
+  ],
+  "model": "claude-3-5-sonnet-20241022",
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 28,
+    "output_tokens": 9
+  }
+}
+```
+
+### `stop_reason` Values
+
+| Value | Meaning |
+|-------|---------|
+| `end_turn` | Model finished naturally |
+| `max_tokens` | Hit the `max_tokens` limit |
+| `stop_sequence` | Matched a `stop_sequences` entry |
+| `tool_use` | Model wants to call a tool |
+
+---
+
+## Streaming
+
+Set `stream: true` to receive tokens as they are generated. The SDK handles SSE parsing automatically.
+
+<CodeGroup>
+```python Python
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+
+with client.messages.stream(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Write a short story about a samurai."}],
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+
+# After the stream, access usage:
+final = stream.get_final_message()
+print(f"\nTotal tokens: {final.usage.input_tokens + final.usage.output_tokens}")
+```
+```typescript TypeScript
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  baseURL: "https://www.samuraiapi.in/api",
+  apiKey: process.env.SAMURAI_API_KEY!,
+});
+
+const stream = await client.messages.create({
+  model: "claude-3-5-sonnet-20241022",
+  max_tokens: 1024,
+  stream: true,
+  messages: [{ role: "user", content: "Write a short story about a samurai." }],
+});
+
+for await (const event of stream) {
+  if (
+    event.type === "content_block_delta" &&
+    event.delta.type === "text_delta"
+  ) {
+    process.stdout.write(event.delta.text);
+  }
+}
+```
+```bash cURL
+curl https://www.samuraiapi.in/api/v1/messages \
+  -H "x-api-key: YOUR_SAMURAI_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  --no-buffer \
+  -d '{
+    "model": "claude-3-5-sonnet-20241022",
+    "max_tokens": 1024,
+    "stream": true,
+    "messages": [
+      {"role": "user", "content": "Write a short story about a samurai."}
+    ]
+  }'
+```
+</CodeGroup>
+
+### SSE Event Sequence
+
+Samurai AI emits the full Anthropic SSE event sequence:
+
+```
+event: message_start
+data: {"type":"message_start","message":{"id":"msg_01...","type":"message","role":"assistant","content":[],"model":"claude-3-5-sonnet-20241022","stop_reason":null,"usage":{"input_tokens":14,"output_tokens":1}}}
+
+event: content_block_start
+data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}
+
+event: ping
+data: {"type":"ping"}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"In"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" feudal Japan"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":0}
+
+event: message_delta
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":142}}
+
+event: message_stop
+data: {"type":"message_stop"}
+```
+
+---
+
+## Multi-turn Conversations
+
+Build multi-turn conversations by appending each exchange to the `messages` array:
+
+```python
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+
+conversation = []
+
+def chat(user_input: str) -> str:
+    conversation.append({"role": "user", "content": user_input})
+
+    response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=512,
+        system="You are a knowledgeable travel guide.",
+        messages=conversation,
+    )
+
+    reply = response.content[0].text
+    conversation.append({"role": "assistant", "content": reply})
+    return reply
+
+print(chat("What's special about Kyoto?"))
+print(chat("What's the best time of year to visit?"))  # Claude remembers the context
+print(chat("How long should I stay?"))
+```
+
+---
+
+## Tool Use (Function Calling)
+
+Give Claude access to external tools. Tools use `input_schema` (not `parameters`).
+
+<CodeGroup>
+```python Python
+import json
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+
+tools = [
+    {
+        "name": "get_weather",
+        "description": "Get the current weather for a city",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "description": "The city name, e.g. 'Tokyo'"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": ["celsius", "fahrenheit"],
+                    "description": "Temperature unit"
+                }
+            },
+            "required": ["city"]
+        }
+    }
+]
+
+# Step 1: Send initial message with tools
+response = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    tools=tools,
+    messages=[{"role": "user", "content": "What's the weather in Tokyo?"}]
+)
+
+# Step 2: Check if Claude wants to use a tool
+if response.stop_reason == "tool_use":
+    tool_use = next(b for b in response.content if b.type == "tool_use")
+    print(f"Claude called: {tool_use.name}({tool_use.input})")
+
+    # Step 3: Execute the tool
+    def get_weather(city: str, unit: str = "celsius"):
+        return {"city": city, "temperature": 18, "condition": "Partly cloudy", "unit": unit}
+
+    result = get_weather(**tool_use.input)
+
+    # Step 4: Send the result back
+    final = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=1024,
+        tools=tools,
+        messages=[
+            {"role": "user", "content": "What's the weather in Tokyo?"},
+            {"role": "assistant", "content": response.content},
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": tool_use.id,
+                        "content": json.dumps(result)
+                    }
+                ]
+            }
+        ]
+    )
+    print(final.content[0].text)
+    # => "The current weather in Tokyo is 18°C and partly cloudy."
+```
+```typescript TypeScript
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  baseURL: "https://www.samuraiapi.in/api",
+  apiKey: process.env.SAMURAI_API_KEY!,
+});
+
+const tools: Anthropic.Tool[] = [
+  {
+    name: "get_weather",
+    description: "Get the current weather for a city",
+    input_schema: {
+      type: "object",
+      properties: {
+        city: { type: "string", description: "City name" },
+        unit: { type: "string", enum: ["celsius", "fahrenheit"] },
+      },
+      required: ["city"],
+    },
+  },
+];
+
+const response = await client.messages.create({
+  model: "claude-3-5-sonnet-20241022",
+  max_tokens: 1024,
+  tools,
+  messages: [{ role: "user", content: "What's the weather in Tokyo?" }],
+});
+
+if (response.stop_reason === "tool_use") {
+  const toolUse = response.content.find((b) => b.type === "tool_use");
+  if (toolUse && toolUse.type === "tool_use") {
+    const result = { city: "Tokyo", temperature: 18, condition: "Partly cloudy" };
+
+    const final = await client.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 1024,
+      tools,
+      messages: [
+        { role: "user", content: "What's the weather in Tokyo?" },
+        { role: "assistant", content: response.content },
+        {
+          role: "user",
+          content: [
+            {
+              type: "tool_result",
+              tool_use_id: toolUse.id,
+              content: JSON.stringify(result),
+            },
+          ],
+        },
+      ],
+    });
+
+    const text = final.content[0];
+    if (text.type === "text") console.log(text.text);
+  }
+}
+```
+</CodeGroup>
+
+### `tool_choice` Options
+
+| Value | Behavior |
+|-------|----------|
+| `{"type": "auto"}` | Claude decides whether to use a tool (default) |
+| `{"type": "any"}` | Claude must use at least one tool |
+| `{"type": "tool", "name": "X"}` | Claude must use the named tool |
+| `{"type": "none"}` | Claude cannot use tools |
+
+---
+
+## Vision (Image Input)
+
+Claude can analyze images passed as base64 or URLs.
+
+<CodeGroup>
+```python Python
+import base64
+from pathlib import Path
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+
+# From a local file
+image_data = base64.standard_b64encode(Path("photo.jpg").read_bytes()).decode("utf-8")
+
+response = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": "image/jpeg",
+                        "data": image_data,
+                    },
+                },
+                {
+                    "type": "text",
+                    "text": "Describe what you see in this image."
+                }
+            ],
+        }
+    ],
+)
+
+print(response.content[0].text)
+```
+```typescript TypeScript
+import Anthropic from "@anthropic-ai/sdk";
+import * as fs from "fs";
+
+const client = new Anthropic({
+  baseURL: "https://www.samuraiapi.in/api",
+  apiKey: process.env.SAMURAI_API_KEY!,
+});
+
+const imageData = fs.readFileSync("photo.jpg").toString("base64");
+
+const response = await client.messages.create({
+  model: "claude-3-5-sonnet-20241022",
+  max_tokens: 1024,
+  messages: [
+    {
+      role: "user",
+      content: [
+        {
+          type: "image",
+          source: {
+            type: "base64",
+            media_type: "image/jpeg",
+            data: imageData,
+          },
+        },
+        { type: "text", text: "Describe what you see in this image." },
+      ],
+    },
+  ],
+});
+
+const text = response.content[0];
+if (text.type === "text") console.log(text.text);
+```
+</CodeGroup>
+
+### Supported Image Formats
+
+| Format | `media_type` |
+|--------|-------------|
+| JPEG | `image/jpeg` |
+| PNG | `image/png` |
+| GIF | `image/gif` |
+| WebP | `image/webp` |
+
+---
+
+## Temperature & Sampling
+
+```python
+# Deterministic — best for factual tasks, code generation
+response = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=512,
+    temperature=0.0,
+    messages=[{"role": "user", "content": "List the planets in order from the Sun."}]
+)
+
+# Creative — best for writing, brainstorming
+response = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=512,
+    temperature=1.0,
+    top_p=0.95,
+    messages=[{"role": "user", "content": "Write an opening line for a mystery novel."}]
+)
+```
+
+---
+
+## Error Handling
+
+Errors are returned in Anthropic format:
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "invalid_request_error",
+    "message": "max_tokens is required"
+  }
+}
+```
+
+### Error Types
+
+| `error.type` | HTTP Status | Cause |
+|-------------|-------------|-------|
+| `invalid_request_error` | 400 | Missing or invalid parameters |
+| `authentication_error` | 401 | Invalid or missing API key |
+| `permission_error` | 403 | Key lacks access to this model or tier |
+| `not_found_error` | 404 | Unknown model ID |
+| `rate_limit_error` | 429 | Too many requests or quota exceeded |
+| `api_error` | 500/503 | Server-side error — safe to retry |
+
+### Error Handling in Code
+
+```python
+from anthropic import Anthropic, APIError, RateLimitError, AuthenticationError
+
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+
+try:
+    response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": "Hello!"}]
+    )
+    print(response.content[0].text)
+
+except AuthenticationError:
+    print("Invalid API key. Check your credentials.")
+
+except RateLimitError:
+    print("Rate limit hit. Slow down or upgrade your plan.")
+
+except APIError as e:
+    print(f"API error {e.status_code}: {e.message}")
+```
+
+---
+
+## Migration from Anthropic Cloud
+
+Change **one line** — everything else stays the same:
+
+```python
+# Before
+from anthropic import Anthropic
+client = Anthropic(api_key="sk-ant-api03-...")
+
+# After — Samurai AI
+from anthropic import Anthropic
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"             # Your Samurai API key
+)
+
+# All existing code works unchanged ✓
+```
+
+```typescript
+// Before
+const client = new Anthropic({ apiKey: "sk-ant-api03-..." });
+
+// After — Samurai AI
+const client = new Anthropic({
+  baseURL: "https://www.samuraiapi.in/api",
+  apiKey: process.env.SAMURAI_API_KEY!,
+});
+```
+
+<Tip>
+  Your Samurai API key starts with `sk-samurai-` or a custom prefix. Get yours from the [dashboard](https://www.samuraiapi.in/dashboard).
+</Tip>

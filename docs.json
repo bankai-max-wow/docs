@@ -43,6 +43,13 @@
             ]
           },
           {
+            "group": "Anthropic Format",
+            "pages": [
+              "api/anthropic/overview",
+              "api/anthropic/messages"
+            ]
+          },
+          {
             "group": "Audio",
             "pages": [
               "api/audio/text-to-speech",

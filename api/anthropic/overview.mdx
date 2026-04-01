@@ -1,0 +1,229 @@
+---
+title: "Anthropic Format Overview"
+icon: "robot"
+description: "Use Claude models with the official Anthropic SDK — point it at Samurai AI and your existing code works unchanged."
+---
+
+## What is Anthropic Native Format?
+
+Samurai AI supports **two API formats** side-by-side:
+
+| Format | Endpoint | Auth Header | SDK |
+|--------|----------|-------------|-----|
+| OpenAI-compatible | `POST /v1/chat/completions` | `Authorization: Bearer sk-...` | `openai` |
+| **Anthropic-native** | **`POST /v1/messages`** | **`x-api-key: sk-...`** | **`anthropic`** |
+
+If you already use the official `anthropic` Python or TypeScript SDK — or call `api.anthropic.com` directly — you can switch to Samurai AI **by changing one line**: the `base_url`.
+
+```python
+# Before (Anthropic Cloud)
+from anthropic import Anthropic
+client = Anthropic(api_key="sk-ant-...")
+
+# After (Samurai AI — everything else stays the same)
+from anthropic import Anthropic
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+```
+
+<Info>
+  **Base URL for Anthropic format**: `https://www.samuraiapi.in/api`
+
+  The Anthropic SDK appends `/v1/messages` automatically. Do not include it in the base URL.
+</Info>
+
+---
+
+## Supported Claude Models
+
+| Model ID | Context | Best For |
+|----------|---------|----------|
+| `claude-opus-4-5` | 200K | Complex analysis, research, long documents |
+| `claude-sonnet-4-5` | 200K | Balanced performance, most tasks |
+| `claude-3-5-sonnet-20241022` | 200K | Coding, reasoning, instruction-following |
+| `claude-3-5-haiku-20241022` | 200K | Fast, low-latency responses |
+| `claude-3-opus-20240229` | 200K | Deep reasoning, nuanced writing |
+
+<Tip>
+  You can also use Claude models through the OpenAI-compatible `/v1/chat/completions` endpoint — Samurai AI converts the format automatically. Use whichever endpoint matches your existing SDK.
+</Tip>
+
+---
+
+## Key Differences from OpenAI Format
+
+### 1. System prompt is a top-level field
+
+```python
+# OpenAI format — system message inside messages array
+messages = [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Hello!"}
+]
+
+# Anthropic format — system is a separate top-level parameter
+response = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    system="You are a helpful assistant.",   # <-- top-level
+    messages=[
+        {"role": "user", "content": "Hello!"}
+    ]
+)
+```
+
+### 2. `max_tokens` is required
+
+The Anthropic API always requires `max_tokens`. There is no default.
+
+### 3. Response is a `Message` object, not a `ChatCompletion`
+
+```json
+// OpenAI response
+{
+  "object": "chat.completion",
+  "choices": [{ "message": { "role": "assistant", "content": "..." } }]
+}
+
+// Anthropic response
+{
+  "type": "message",
+  "role": "assistant",
+  "content": [{ "type": "text", "text": "..." }]
+}
+```
+
+### 4. Tool definitions use `input_schema` instead of `parameters`
+
+```python
+# OpenAI format
+tools = [{"type": "function", "function": {"name": "get_weather", "parameters": {...}}}]
+
+# Anthropic format
+tools = [{"name": "get_weather", "input_schema": {...}}]
+```
+
+### 5. Auth header is `x-api-key`
+
+```bash
+# OpenAI
+-H "Authorization: Bearer sk-samurai-..."
+
+# Anthropic
+-H "x-api-key: sk-samurai-..."
+-H "anthropic-version: 2023-06-01"
+```
+
+---
+
+## Quick Start
+
+<CodeGroup>
+```python Python
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="https://www.samuraiapi.in/api",
+    api_key="YOUR_SAMURAI_KEY"
+)
+
+message = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    system="You are a helpful assistant.",
+    messages=[
+        {"role": "user", "content": "Explain the theory of relativity in simple terms."}
+    ]
+)
+
+print(message.content[0].text)
+print(f"Used {message.usage.input_tokens} input + {message.usage.output_tokens} output tokens")
+```
+```typescript TypeScript
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  baseURL: "https://www.samuraiapi.in/api",
+  apiKey: process.env.SAMURAI_API_KEY!,
+});
+
+const message = await client.messages.create({
+  model: "claude-3-5-sonnet-20241022",
+  max_tokens: 1024,
+  system: "You are a helpful assistant.",
+  messages: [
+    { role: "user", content: "Explain the theory of relativity in simple terms." }
+  ],
+});
+
+console.log(message.content[0].type === "text" ? message.content[0].text : "");
+```
+```bash cURL
+curl https://www.samuraiapi.in/api/v1/messages \
+  -H "x-api-key: YOUR_SAMURAI_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{
+    "model": "claude-3-5-sonnet-20241022",
+    "max_tokens": 1024,
+    "system": "You are a helpful assistant.",
+    "messages": [
+      {"role": "user", "content": "Explain the theory of relativity in simple terms."}
+    ]
+  }'
+```
+</CodeGroup>
+
+---
+
+## SDK Installation
+
+<CodeGroup>
+```bash Python
+pip install anthropic
+```
+```bash TypeScript / Node.js
+npm install @anthropic-ai/sdk
+```
+</CodeGroup>
+
+---
+
+## Authentication
+
+Use your Samurai AI API key in the `x-api-key` header. The same key works for both OpenAI-compatible and Anthropic-native endpoints.
+
+```bash
+# Get your key from: https://www.samuraiapi.in/dashboard
+x-api-key: sk-samurai-YOUR_KEY_HERE
+```
+
+The `anthropic-version: 2023-06-01` header is required by the official SDK — Samurai AI accepts it and forwards it as needed.
+
+---
+
+## Rate Limits & Quotas
+
+Anthropic-format requests use the **same quotas and rate limits** as OpenAI-format requests. Your plan limits apply across both endpoints.
+
+| Plan | Requests/min | Notes |
+|------|-------------|-------|
+| Free | 10 RPM | Shared across all endpoints |
+| Starter | 60 RPM | — |
+| Pro | 200 RPM | — |
+| Enterprise | Custom | Contact us |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Messages API" icon="message" href="/api/anthropic/messages">
+    Full reference for the `/v1/messages` endpoint — parameters, streaming, tool use, vision.
+  </Card>
+  <Card title="Function Calling" icon="wrench" href="/api/function-calling">
+    Tool use with the OpenAI-compatible format (also works with Claude models).
+  </Card>
+</CardGroup>
