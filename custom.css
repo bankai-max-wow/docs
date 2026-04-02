@@ -1,5 +1,5 @@
 ﻿/* ============================================
-   Hide scrollbar — all browsers
+   Hide scrollbar - all browsers
    ============================================ */
 
 html,
@@ -17,37 +17,17 @@ body::-webkit-scrollbar {
 }
 
 /* ============================================
-   Fix Mintlify topbar and sidebar scrolling away
+   Prevent horizontal overflow / side-scroll
+   (scoped to page root only - not Mintlify internals)
    ============================================ */
 
-/* In Mintlify, position: sticky fails if any parent element has overflow: hidden. 
-   We reset it to visible and use overflow-x: clip instead to fix the sticky headers. */
-html, body, #__next, #root, main, [class*="overflow-hidden"], .overflow-hidden {
-  overflow-y: visible !important;
-  /* Instead of overflow-x: hidden which breaks sticky, we use clip or visible */
-  overflow-x: visible !important;
-}
-
-/* Force horizontal clipping on root wrappers to avoid scrollbar from background blur */
-#__next > div, #root > div {
-  overflow-x: clip !important;
-  overflow-y: visible !important;
-}
-
-/* Ensure header remains sticky */
-header, nav, #navbar, #header, .navbar, [data-testid="navbar"] {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 1000 !important;
-}
-
-/* Ensure sidebar remains sticky */
-aside, #sidebar, .sidebar, [data-testid="sidebar"] {
-  position: sticky !important;
-  top: 0 !important;
-  height: 100vh !important;
-  z-index: 100 !important;
-  overflow-y: auto !important;
+html,
+body {
+  /* Fix for Mintlify sticky header: 
+     overflow-x: hidden completely BREAKS position: sticky. 
+     Using clip achieves the same horizontal constraint safely! */
+  overflow-x: clip;
+  max-width: 100vw;
 }
 
 /* ============================================
@@ -61,7 +41,7 @@ aside, #sidebar, .sidebar, [data-testid="sidebar"] {
 }
 
 /* ============================================
-   Prose tables — wrap content, no side scroll
+   Prose tables - wrap content, no side scroll
    ============================================ */
 
 .prose table,
@@ -83,7 +63,7 @@ th {
 }
 
 /* ============================================
-   Code blocks — allow horizontal scroll inside
+   Code blocks - allow horizontal scroll inside
    ============================================ */
 
 pre {
@@ -92,7 +72,7 @@ pre {
 }
 
 /* ============================================
-   Media — naturally sized, never overflow
+   Media - naturally sized, never overflow
    ============================================ */
 
 img,
