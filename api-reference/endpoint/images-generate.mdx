@@ -1,0 +1,105 @@
+---
+title: Image Generation
+description: "Generate images using various AI models"
+openapi: "POST /v1/images/generations"
+---
+
+# Image Generation
+
+Create an image from a text prompt using various state-of-the-art models. Our API is fully compatible with the OpenAI Image Generation schema.
+
+## Endpoint
+
+```
+POST https://api.samuraiapi.in/v1/images/generations
+```
+
+## Request Body
+
+<ParamField body="model" type="string" required>
+  The model ID to use for image generation. 
+  
+  Available models include:
+  - `flux-schnell` (Fast, high quality)
+  - `flux-1.1-pro` (Professional grade)
+  - `dall-e-3` (OpenAI's latest)
+  - `ideogram-v3` (Excellent for text in images)
+  - `imagen-3` (Google's latest)
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+  A text description of the desired image(s). The maximum length is 1000 characters.
+</ParamField>
+
+<ParamField body="n" type="integer" default={1}>
+  The number of images to generate. Must be between 1 and 10.
+</ParamField>
+
+<ParamField body="size" type="string" default="1024x1024">
+  The size of the generated images. Options: `256x256`, `512x512`, `1024x1024`.
+</ParamField>
+
+<ParamField body="response_format" type="string" default="url">
+  The format in which the generated images are returned. Must be one of `url` or `b64_json`.
+</ParamField>
+
+<ParamField body="user" type="string">
+  A unique identifier for the end-user, for abuse monitoring.
+</ParamField>
+
+## Response
+
+<ResponseField name="created" type="integer">
+  Unix timestamp of when the generation was created
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  An array of image objects. Each object contains:
+  - `url` (string): The URL of the generated image (if `response_format` is `url`)
+  - `b64_json` (string): The base64-encoded JSON of the generated image (if `response_format` is `b64_json`)
+  - `revised_prompt` (string): The prompt as revised by the model (if applicable)
+</ResponseField>
+
+## Examples
+
+<CodeGroup>
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-samurai-...",
+    base_url="https://api.samuraiapi.in/v1"
+)
+
+response = client.images.generate(
+    model="flux-1.1-pro",
+    prompt="A futuristic samurai warrior in a neon-lit cyberpunk city, high detail, 8k resolution",
+    n=1,
+    size="1024x1024"
+)
+
+print(response.data[0].url)
+```
+
+```bash cURL
+curl https://api.samuraiapi.in/v1/images/generations \
+  -H "Authorization: Bearer sk-samurai-..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "flux-1.1-pro",
+    "prompt": "A futuristic samurai warrior in a neon-lit cyberpunk city, high detail, 8k resolution",
+    "n": 1,
+    "size": "1024x1024"
+  }'
+```
+</CodeGroup>
+
+## Error Responses
+
+| Status | Error Type | Description |
+|--------|------------|-------------|
+| 400 | `invalid_request_error` | Missing required field or invalid parameter |
+| 401 | `authentication_error` | Invalid API key |
+| 404 | `not_found_error` | Model not found |
+| 429 | `rate_limit_error` | Rate limit exceeded |
+| 500 | `server_error` | Internal server error |

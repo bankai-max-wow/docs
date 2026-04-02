@@ -88,6 +88,18 @@
             "pages": [
               "api-reference/endpoint/create-embedding"
             ]
+          },
+          {
+            "group": "Images",
+            "pages": [
+              "api-reference/endpoint/images-generate"
+            ]
+          },
+          {
+            "group": "Videos",
+            "pages": [
+              "api-reference/endpoint/video-generate"
+            ]
           }
         ]
       },

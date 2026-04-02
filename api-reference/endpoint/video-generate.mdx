@@ -1,0 +1,161 @@
+---
+title: Video Generation
+description: "Generate videos using various AI models"
+openapi: "POST /v1/videos/generations"
+---
+
+# Video Generation
+
+Create high-quality videos from text prompts using state-of-the-art video generation models. This is an asynchronous endpoint that returns a job ID for status polling.
+
+## Endpoint
+
+```
+POST https://api.samuraiapi.in/v1/videos/generations
+```
+
+## Request Body
+
+<ParamField body="model" type="string" required>
+  The model ID to use for video generation. 
+  
+  Available models include:
+  - `veo-3.1` (Google's latest)
+  - `sora-2` (OpenAI's latest)
+  - `luma-ray-2` (Luma AI's latest)
+  - `hailuo-2` (MiniMax's latest)
+  - `pika-2.2` (Pika Labs' latest)
+  - `kling-v1.5` (Kuaishou's latest)
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+  A text description of the desired video. The maximum length is 1000 characters.
+</ParamField>
+
+<ParamField body="aspect_ratio" type="string" default="16:9">
+  The aspect ratio of the generated video. Options: `16:9`, `9:16`, `1:1`.
+</ParamField>
+
+<ParamField body="duration" type="integer" default={5}>
+  The duration of the generated video in seconds. Options: `5`, `10`.
+</ParamField>
+
+<ParamField body="user" type="string">
+  A unique identifier for the end-user, for abuse monitoring.
+</ParamField>
+
+## Response
+
+<ResponseField name="job_id" type="string">
+  Unique identifier for the generation job (e.g., `vid-abc123`)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status of the job. Always `"pending"` initially.
+</ResponseField>
+
+<ResponseField name="status_url" type="string">
+  The URL to poll for the job status.
+</ResponseField>
+
+## Polling for Status
+
+Since video generation is an asynchronous process, you must poll the status endpoint until the job is completed.
+
+### Endpoint
+
+```
+GET https://api.samuraiapi.in/v1/videos/status/{job_id}
+```
+
+### Response
+
+<ResponseField name="job_id" type="string">
+  Unique identifier for the generation job
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status of the job. One of: `"pending"`, `"processing"`, `"completed"`, `"failed"`.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  The result of the generation job (only present when `status` is `"completed"`).
+  - `video_url` (string): The URL of the generated video
+  - `thumbnail_url` (string): The URL of the video thumbnail
+</ResponseField>
+
+<ResponseField name="error" type="object">
+  Error details (only present when `status` is `"failed"`).
+  - `message` (string): Description of the error
+</ResponseField>
+
+## Examples
+
+### Generate Video
+
+<CodeGroup>
+```bash cURL
+curl https://api.samuraiapi.in/v1/videos/generations \
+  -H "Authorization: Bearer sk-samurai-..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "veo-3.1",
+    "prompt": "A cinematic shot of a samurai walking through a cherry blossom forest at sunset",
+    "aspect_ratio": "16:9",
+    "duration": 5
+  }'
+```
+
+```python Python
+import requests
+import time
+
+API_KEY = "sk-samurai-..."
+BASE_URL = "https://api.samuraiapi.in/v1"
+
+# 1. Start the generation job
+response = requests.post(
+    f"{BASE_URL}/videos/generations",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={
+        "model": "veo-3.1",
+        "prompt": "A cinematic shot of a samurai walking through a cherry blossom forest at sunset",
+        "aspect_ratio": "16:9",
+        "duration": 5
+    }
+)
+
+job_id = response.json()["job_id"]
+print(f"Job started: {job_id}")
+
+# 2. Poll for status
+while True:
+    status_response = requests.get(
+        f"{BASE_URL}/videos/status/{job_id}",
+        headers={"Authorization": f"Bearer {API_KEY}"}
+    )
+    data = status_response.json()
+    status = data["status"]
+    
+    print(f"Status: {status}")
+    
+    if status == "completed":
+        print(f"Video URL: {data['result']['video_url']}")
+        break
+    elif status == "failed":
+        print(f"Error: {data['error']['message']}")
+        break
+        
+    time.sleep(5) # Wait 5 seconds before polling again
+```
+</CodeGroup>
+
+## Error Responses
+
+| Status | Error Type | Description |
+|--------|------------|-------------|
+| 400 | `invalid_request_error` | Missing required field or invalid parameter |
+| 401 | `authentication_error` | Invalid API key |
+| 404 | `not_found_error` | Model not found |
+| 429 | `rate_limit_error` | Rate limit exceeded |
+| 500 | `server_error` | Internal server error |
