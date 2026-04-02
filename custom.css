@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    Hide scrollbar — all browsers
    ============================================ */
 
@@ -17,14 +17,37 @@ body::-webkit-scrollbar {
 }
 
 /* ============================================
-   Prevent horizontal overflow / side-scroll
-   (scoped to page root only — not Mintlify internals)
+   Fix Mintlify topbar and sidebar scrolling away
    ============================================ */
 
-html,
-body {
-  overflow-x: hidden;
-  max-width: 100vw;
+/* In Mintlify, position: sticky fails if any parent element has overflow: hidden. 
+   We reset it to visible and use overflow-x: clip instead to fix the sticky headers. */
+html, body, #__next, #root, main, [class*="overflow-hidden"], .overflow-hidden {
+  overflow-y: visible !important;
+  /* Instead of overflow-x: hidden which breaks sticky, we use clip or visible */
+  overflow-x: visible !important;
+}
+
+/* Force horizontal clipping on root wrappers to avoid scrollbar from background blur */
+#__next > div, #root > div {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+/* Ensure header remains sticky */
+header, nav, #navbar, #header, .navbar, [data-testid="navbar"] {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+}
+
+/* Ensure sidebar remains sticky */
+aside, #sidebar, .sidebar, [data-testid="sidebar"] {
+  position: sticky !important;
+  top: 0 !important;
+  height: 100vh !important;
+  z-index: 100 !important;
+  overflow-y: auto !important;
 }
 
 /* ============================================
